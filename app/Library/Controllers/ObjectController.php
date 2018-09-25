@@ -20,7 +20,7 @@ class ObjectController extends BaseController
     {
     }
 
-    public function delete($id)
+    public function destroy($id)
     {
     }
 }
