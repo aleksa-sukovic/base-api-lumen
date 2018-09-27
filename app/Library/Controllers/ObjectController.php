@@ -8,6 +8,7 @@ class ObjectController extends BaseController
 {
     public function index()
     {
+        return 'Index';
     }
 
     public function show($id)

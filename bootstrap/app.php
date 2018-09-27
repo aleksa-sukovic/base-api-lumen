@@ -1,6 +1,7 @@
 <?php
 
 use App\User\UserServiceProvider;
+use Aleksa\Locale\LocaleServiceProvider;
 
 require_once __DIR__.'/../vendor/autoload.php';
 
@@ -79,5 +80,6 @@ $app->singleton(
 | totally optional, so you are not required to uncomment this line.
 |
 */
+$app->register(LocaleServiceProvider::class);
 
 return $app;
