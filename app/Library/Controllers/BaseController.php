@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Library\Controllers;
+namespace Aleksa\Library\Controllers;
 
 use App\Http\Controllers\Controller;
 use League\Fractal\Manager;

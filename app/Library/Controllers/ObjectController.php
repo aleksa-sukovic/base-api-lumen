@@ -1,6 +1,8 @@
 <?php
 
-namespace App\Library\Controllers;
+namespace Aleksa\Library\Controllers;
+
+use Aleksa\Library\Controllers\BaseController;
 
 class ObjectController extends BaseController
 {

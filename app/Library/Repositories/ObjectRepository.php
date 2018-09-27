@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Library\Repositories;
+namespace Aleksa\Library\Repositories;
 
 class ObjectRepository
 {
