@@ -7,6 +7,7 @@ use Aleksa\Library\Exceptions\ItemNotFoundException;
 class ObjectRepository
 {
     protected $model;
+    protected $validator;
 
     public function findById($id)
     {
