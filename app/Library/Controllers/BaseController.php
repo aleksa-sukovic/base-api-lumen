@@ -14,9 +14,11 @@ class BaseController extends Controller
     protected $transformer;
     protected $fractal;
     protected $repository;
+    protected $request;
 
     public function __construct()
     {
+        $this->request = app('request');
         $this->fractal = new Manager();
         $this->fractal->setSerializer(new ArraySerializer);
     }
