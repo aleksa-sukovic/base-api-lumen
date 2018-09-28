@@ -13,7 +13,7 @@ class BaseController extends Controller
     protected $statusCode;
     protected $transformer;
     protected $fractal;
-    protected $model;
+    protected $repository;
 
     public function __construct()
     {
