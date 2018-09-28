@@ -26,10 +26,11 @@ class BaseException extends Exception
     public function toArray()
     {
         $data = [
-            'class' => get_class($this),
+            'class'       => get_class($this),
             'status_code' => $this->getStatusCode(),
-            'file' => $this->getFile(),
-            'message' => $this->getMessage()
+            'file'        => $this->getFile(),
+            'line'        => $this->getLine(),
+            'message'     => $this->getMessage(),
         ];
 
         if ($this->withTrace) {

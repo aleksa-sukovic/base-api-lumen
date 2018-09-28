@@ -49,6 +49,7 @@ class Handler extends ExceptionHandler
             'class'       => get_class($exception),
             'status_code' => $exception->getCode(),
             'file'        => $exception->getFile(),
+            'line'        => $exception->getLine(),
             'message'     => $exception->getMessage()
         ];
 
