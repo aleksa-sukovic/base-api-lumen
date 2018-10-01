@@ -35,10 +35,19 @@ class BaseValidator
     private function getRules($attributes)
     {
         if (array_key_exists('id', $attributes)) {
-            return $this->updateRules;
+            return $this->parseUpdateRules($attributes['id'], $this->updateRules);
         }
 
         return $this->rules;
+    }
+
+    protected function parseUpdateRules($id, $array)
+    {
+        foreach ($array as $key => $value) {
+            $array[$key] = str_replace('{id}', $id, $value);
+        }
+
+        return $array;
     }
 
     public function getErrors()
