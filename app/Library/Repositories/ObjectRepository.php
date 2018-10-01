@@ -8,7 +8,17 @@ use Aleksa\Library\Exceptions\BaseException;
 class ObjectRepository
 {
     protected $model;
+    protected $queryProcessor;
     protected $validator;
+
+    public function all($params)
+    {
+        $query = $this->queryProcessor->process($this->model->newQuery(), $params);
+
+        $items = $query->get();
+
+        return $items;
+    }
 
     public function create($params)
     {
@@ -27,7 +37,7 @@ class ObjectRepository
 
         $item   = $this->findById($id);
         $result = $item->update($params);
-        
+
         if(!$result) {
             throw new BaseException(400, "Could not update the item");
         }
