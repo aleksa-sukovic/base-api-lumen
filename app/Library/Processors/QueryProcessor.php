@@ -32,13 +32,13 @@ class QueryProcessor
     protected function filter(Builder $query, $params)
     {
         foreach ($params as $key => $value) {
-            if(!in_array($key, $this->filterableParams)) {                
+            if(!in_array($key, $this->filterableParams)) {
                 continue;
             }
 
             $query->where($key, '=', $value);
         }
-        
+
         return $query;
     }
 

@@ -6,9 +6,14 @@ use Aleksa\Library\Controllers\BaseController;
 
 class ObjectController extends BaseController
 {
+    protected $repository;
+
     public function index()
     {
-        return 'Index';
+        $params = $this->request->all();
+        
+        $items = $this->repository->all($params);
+        return $this->respondCollection($items, 200);
     }
 
     public function show($id)
