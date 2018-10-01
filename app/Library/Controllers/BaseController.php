@@ -18,27 +18,32 @@ class BaseController extends Controller
 
     public function __construct()
     {
-        $this->request = app('request');
-        $this->fractal = new Manager();
+        $this->request    = app('request');
+        $this->fractal    = new Manager();
+        $this->statusCode = 200;
         $this->fractal->setSerializer(new ArraySerializer);
     }
 
-    public function respondSingle($data, string $message = 'Success', array $additionalData = [], $customTransformer = null)
+    public function respondSingle($data, int $statusCode = null, string $message = 'Success', array $additionalData = [], $customTransformer = null)
     {
+        if(!$statusCode) {
+            $statusCode = $this->getStatusCode();
+        }
+
         $transformer = $this->transformer;
         if ($customTransformer) {
             $transformer = $customTransformer;
         }
 
         $item = new Item($data, $transformer);
-        return $this->respond($this->fractal->createData($item)->toArray(), $message, $additionalData);
+        return $this->respond($this->fractal->createData($item)->toArray(), $statusCode, $message, $additionalData);
     }
 
-    private function respond($data, string $message = 'Success', array $additionalData = [])
+    private function respond($data, int $statusCode, string $message = 'Success', array $additionalData = [])
     {
         $responseArray = [
             'message' => $message,
-            'status_code' => $this->getStatusCode(),
+            'status_code' => $statusCode,
             'data' => $data
         ];
 
@@ -46,7 +51,7 @@ class BaseController extends Controller
             $responseArray[$key] = $value;
         }
 
-        return response()->json($responseArray)->setStatusCode($this->getStatusCode());
+        return response()->json($responseArray)->setStatusCode($statusCode);
     }
 
     public function getStatusCode()
