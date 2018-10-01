@@ -2,19 +2,19 @@
 
 namespace Aleksa\Library\Controllers;
 
-use App\Http\Controllers\Controller;
 use League\Fractal\Manager;
-use League\Fractal\Serializer\ArraySerializer;
 use League\Fractal\Resource\Item;
+use App\Http\Controllers\Controller;
+use League\Fractal\Resource\Collection;
 use League\Fractal\TransformerAbstract;
+use League\Fractal\Serializer\ArraySerializer;
 
 class BaseController extends Controller
 {
     protected $statusCode;
     protected $transformer;
-    protected $fractal;
-    protected $repository;
     protected $request;
+    protected $fractal;
 
     public function __construct()
     {
@@ -39,13 +39,32 @@ class BaseController extends Controller
         return $this->respond($this->fractal->createData($item)->toArray(), $statusCode, $message, $additionalData);
     }
 
+    public function respondCollection($data, int $statusCode = null, string $message = 'Success', array $additionalData = [], $customTransformer = null)
+    {
+        if(!$statusCode) {
+            $statusCode = $this->getStatusCode();
+        }
+
+        $transformer = $this->transformer;
+        if($customTransformer) {
+            $transformer = $customTransformer;
+        }
+
+        $collection = new Collection($data, $transformer);
+        return $this->respond($this->fractal->createData($collection)->toArray(), $statusCode, $message, $additionalData);
+    }
+
     private function respond($data, int $statusCode, string $message = 'Success', array $additionalData = [])
     {
         $responseArray = [
             'message' => $message,
             'status_code' => $statusCode,
-            'data' => $data
         ];
+
+        $responseArray['data'] = $data;
+        if(array_key_exists('data', $data)) {
+            $responseArray['data'] = $data['data'];
+        }
 
         foreach ($additionalData as $key => $value) {
             $responseArray[$key] = $value;
