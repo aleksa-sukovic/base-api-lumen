@@ -10,8 +10,8 @@ class LocaleController extends ObjectController
 {
     public function __construct(LocaleRepository $repository, LocaleTransformer $transformer)
     {
-        $this->repository  = $repository;
-        $this->transformer = $transformer;
+        $this->repository     = $repository;
+        $this->transformer    = $transformer;
         parent::__construct();
     }
 }
