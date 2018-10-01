@@ -1,8 +1,5 @@
 <?php
 
-use App\User\UserServiceProvider;
-use Aleksa\Locale\LocaleServiceProvider;
-
 require_once __DIR__.'/../vendor/autoload.php';
 
 try {
@@ -83,6 +80,7 @@ $app->middleware([
 | totally optional, so you are not required to uncomment this line.
 |
 */
-$app->register(LocaleServiceProvider::class);
+$app->register(Aleksa\Locale\LocaleServiceProvider::class);
+$app->register(Aleksa\User\UserServiceProvider::class);
 
 return $app;
