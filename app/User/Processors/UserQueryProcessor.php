@@ -6,6 +6,9 @@ use Aleksa\Library\Processors\QueryProcessor;
 
 class UserQueryProcessor extends QueryProcessor
 {
-    protected $filterableParams = ['gender', 'email'];
-    protected $searchableParams = ['full_name'];
+    protected $processors = [
+        'Aleksa\User\Processors\UserFilterProcessor',
+        'Aleksa\User\Processors\UserSearchProcessor',
+        'Aleksa\User\Processors\UserOrderProcessor'
+    ];
 }
