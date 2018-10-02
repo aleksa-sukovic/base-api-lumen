@@ -6,37 +6,19 @@ use Illuminate\Database\Eloquent\Builder;
 
 class QueryProcessor
 {
-    protected $query;
+    protected $processors;
+
+    public function __construct()
+    {
+        foreach ($this->processors as $index => $processor) {
+            $this->processors[$index] = new $processor;
+        }
+    }
 
     public function process(Builder $query, $params)
     {
-        $query = $this->filter($query, $params);
-        $query = $this->search($query, $params);
-
-        return $query;
-    }
-
-    protected function search(Builder $query, $params)
-    {
-        foreach ($params as $key => $value) {
-            if(!in_array($key, $this->searchableParams)) {
-                continue;
-            }
-
-            $query->where($key, 'like', '%' . $value . '%');
-        }
-
-        return $query;
-    }
-
-    protected function filter(Builder $query, $params)
-    {
-        foreach ($params as $key => $value) {
-            if(!in_array($key, $this->filterableParams)) {
-                continue;
-            }
-
-            $query->where($key, '=', $value);
+        foreach ($this->processors as $processor) {
+            $query = $processor->process($query, $params);
         }
 
         return $query;
