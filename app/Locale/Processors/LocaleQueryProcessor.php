@@ -6,6 +6,9 @@ use Aleksa\Library\Processors\QueryProcessor;
 
 class LocaleQueryProcessor extends QueryProcessor
 {
-    protected $filterableParams = ['id', 'code'];
-    protected $searchableParams = ['display'];
+    protected $processors = [
+        'Aleksa\Locale\Processors\LocaleFilterProcessor',
+        'Aleksa\Locale\Processors\LocaleSearchProcessor',
+        'Aleksa\Locale\Processors\LocaleOrderProcessor'
+    ];
 }
