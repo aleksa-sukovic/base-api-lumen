@@ -3,7 +3,8 @@
 namespace Aleksa\Library\Repositories;
 
 use Aleksa\Library\Exceptions\ItemNotFoundException;
-use Aleksa\Library\Exceptions\BaseException;
+use Aleksa\Library\Exceptions\ItemNotSavedException;
+use Aleksa\Library\Exceptions\ItemNotUpdatedException;
 
 class ObjectRepository
 {
@@ -20,12 +21,23 @@ class ObjectRepository
         return $items;
     }
 
-    public function create($params)
+    public function create($params, $save = true)
     {
         $this->validator->validateAndHandle($params);
 
         $modelClass = get_class($this->model);
         $item = new $modelClass($params);
+
+        if (!$save) {
+            return $item;
+        }
+
+        $this->beforeSave($item);
+        $item = $item->save();
+        if (!$item) {
+            throw new ItemNotSavedException;
+        }
+        $this->afterSave($item);
 
         return $item;
     }
@@ -36,10 +48,13 @@ class ObjectRepository
         $this->validator->validateAndHandle($params);
 
         $item   = $this->findById($id);
-        $result = $item->update($params);
 
-        if(!$result) {
-            throw new BaseException(400, "Could not update the item");
+        $this->beforeSave($item);
+        $result = $item->update($params);
+        $this->afterSave($item);
+
+        if (!$result) {
+            throw new ItemNotUpdatedException;
         }
 
         return $item;
@@ -64,5 +79,15 @@ class ObjectRepository
         }
 
         return $item;
+    }
+
+    protected function beforeSave($item)
+    {
+        //
+    }
+
+    protected function afterSave($item)
+    {
+        //
     }
 }
