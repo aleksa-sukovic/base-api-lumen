@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a7df87ff38e84cb4c51f82bbcd8e66d3",
+    "content-hash": "d2d144af8ebe2728206ffb7c5c269836",
     "packages": [
         {
             "name": "doctrine/inflector",
@@ -1232,6 +1232,40 @@
             "description": "The Illuminate View package.",
             "homepage": "https://laravel.com",
             "time": "2018-09-18T12:50:05+00:00"
+        },
+        {
+            "name": "joachim-n/case-converter",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/joachim-n/case-converter.git",
+                "reference": "f31486030bd46242218a0d7d75becab0b02da2f4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/joachim-n/case-converter/zipball/f31486030bd46242218a0d7d75becab0b02da2f4",
+                "reference": "f31486030bd46242218a0d7d75becab0b02da2f4",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^6.2",
+                "symfony/var-dumper": "^3.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "CaseConverter\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "Joachim Noreiko",
+                    "email": "joachim@107701.no-reply.drupal.org"
+                }
+            ],
+            "description": "Case converter library",
+            "time": "2017-12-19T21:18:11+00:00"
         },
         {
             "name": "laravel/lumen-framework",
