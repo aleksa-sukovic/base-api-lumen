@@ -9,6 +9,7 @@ class UserQueryProcessor extends QueryProcessor
     protected $processors = [
         'Aleksa\User\Processors\UserFilterProcessor',
         'Aleksa\User\Processors\UserSearchProcessor',
-        'Aleksa\User\Processors\UserOrderProcessor'
+        'Aleksa\User\Processors\UserOrderProcessor',
+        'Aleksa\User\Processors\UserRangeProcessor'
     ];
 }
