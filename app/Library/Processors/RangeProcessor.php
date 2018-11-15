@@ -4,7 +4,6 @@ namespace Aleksa\Library\Processors;
 
 use Illuminate\Database\Eloquent\Builder;
 use Aleksa\Library\Processors\BaseProcessor;
-use CaseConverter\CaseString;
 
 class RangeProcessor extends BaseProcessor
 {
@@ -23,12 +22,21 @@ class RangeProcessor extends BaseProcessor
             $rangeParams = $this->addRangeParam($rangeParams, $key, $value);
         }
 
-        foreach ($rangeParams as $param => $values) {
-            if (!isset($values['from']) || !isset($values['to'])) {
-                continue;
-            }
+        return $this->processRanges($query, $rangeParams);
 
-            $query->whereBetween($param, [ $values['from'], $values['to'] ]);
+        return $query;
+    }
+
+    private function processRanges(Builder $query, $params)
+    {
+        foreach ($params as $param => $values) {
+            if (isset($values['from']) && isset($values['to'])) {
+                $query->whereBetween($param, [ $values['from'], $values['to'] ]);
+            } else if (isset($values['from'])) {
+                $query->where($param, '>=', $values['from']);
+            } else if (isset($values['to'])){
+                $query->where($param, '<=', $values['to']);
+            }
         }
 
         return $query;
@@ -47,7 +55,7 @@ class RangeProcessor extends BaseProcessor
 
     protected function isParam($param, $type)
     {
-        $param = CaseString::camel(substr($param, strlen($type)))->snake();
+        $param = substr($param, strlen($type) + 1);
 
         foreach ($this->processableParams as $key) {
             if ($key == $param) {
@@ -62,6 +70,6 @@ class RangeProcessor extends BaseProcessor
     {
         $type = $this->isParam($param, 'from') ? 'from' : 'to';
 
-        return CaseString::camel(substr($param, strlen($type)))->snake();
+        return substr($param, strlen($type) + 1);
     }
 }
