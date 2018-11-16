@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Events;
+namespace Aleksa\Events;
 
 use Illuminate\Queue\SerializesModels;
 

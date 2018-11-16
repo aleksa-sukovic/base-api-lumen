@@ -45,7 +45,7 @@ $app->singleton(
 
 $app->singleton(
     Illuminate\Contracts\Console\Kernel::class,
-    App\Console\Kernel::class
+    Aleksa\Console\Kernel::class
 );
 
 /*
@@ -63,11 +63,11 @@ $app->middleware([
 ]);
 
 // $app->middleware([
-//    App\Http\Middleware\ExampleMiddleware::class
+//    Aleksa\Http\Middleware\ExampleMiddleware::class
 // ]);
 
 // $app->routeMiddleware([
-//     'auth' => App\Http\Middleware\Authenticate::class,
+//     'auth' => Aleksa\Http\Middleware\Authenticate::class,
 // ]);
 
 /*

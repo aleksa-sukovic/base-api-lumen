@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Events;
+namespace Aleksa\Events;
 
 class ExampleEvent extends Event
 {

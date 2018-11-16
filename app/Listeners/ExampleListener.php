@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Listeners;
+namespace Aleksa\Listeners;
 
-use App\Events\ExampleEvent;
+use Aleksa\Events\ExampleEvent;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 

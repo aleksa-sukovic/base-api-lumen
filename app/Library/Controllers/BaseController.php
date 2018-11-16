@@ -4,7 +4,7 @@ namespace Aleksa\Library\Controllers;
 
 use League\Fractal\Manager;
 use League\Fractal\Resource\Item;
-use App\Http\Controllers\Controller;
+use Aleksa\Http\Controllers\Controller;
 use League\Fractal\Resource\Collection;
 use League\Fractal\TransformerAbstract;
 use League\Fractal\Serializer\ArraySerializer;
@@ -26,7 +26,7 @@ class BaseController extends Controller
 
     public function respondSingle($data, int $statusCode = null, string $message = 'Success', array $additionalData = [], $customTransformer = null)
     {
-        if(!$statusCode) {
+        if (!$statusCode) {
             $statusCode = $this->getStatusCode();
         }
 
@@ -41,12 +41,12 @@ class BaseController extends Controller
 
     public function respondCollection($data, int $statusCode = null, string $message = 'Success', array $additionalData = [], $customTransformer = null)
     {
-        if(!$statusCode) {
+        if (!$statusCode) {
             $statusCode = $this->getStatusCode();
         }
 
         $transformer = $this->transformer;
-        if($customTransformer) {
+        if ($customTransformer) {
             $transformer = $customTransformer;
         }
 
@@ -62,7 +62,7 @@ class BaseController extends Controller
         ];
 
         $responseArray['data'] = $data;
-        if(array_key_exists('data', $data)) {
+        if (array_key_exists('data', $data)) {
             $responseArray['data'] = $data['data'];
         }
 
