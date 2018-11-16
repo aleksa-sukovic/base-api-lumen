@@ -15,4 +15,9 @@ class LocaleRepository extends ObjectRepository
         $this->validator      = $validator;
         $this->queryProcessor = $queryProcessor;
     }
+
+    public function findByCode($code)
+    {
+        return $this->model->where('code', '=', $code)->first();
+    }
 }
