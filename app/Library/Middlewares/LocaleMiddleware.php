@@ -2,15 +2,15 @@
 
 namespace Aleksa\Library\Middlewares;
 
-use Laravel\Lumen\Http\Request;
 use Closure;
-use Aleksa\Locale\Managers\LocaleManager;
+use Laravel\Lumen\Http\Request;
+use Aleksa\Library\Services\Lang;
 
 class LocaleMiddleware
 {
     public function handle(Request $request, Closure $next)
     {
-        LocaleManager::locale($request->header('locale'));
+        Lang::set($request->header('locale'));
 
         return $next($request);
     }

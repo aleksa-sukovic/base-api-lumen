@@ -1,8 +1,8 @@
 <?php
 
-namespace Aleksa\Locale\Managers;
+namespace Aleksa\Library\Services;
 
-class LocaleManager
+class Lang
 {
     private static $defaultLocaleCode = 'en';
 
@@ -14,25 +14,25 @@ class LocaleManager
         return self::locale()->code;
     }
 
-    public static function locale($locale = null)
+    public static function get()
     {
-        if ($locale !== null) {
-            return self::setLocale($locale);
+        if (self::$locale === null) {
+            return self::getDefaultLocale();
         }
 
-        return self::$locale !== null ? self::$locale : self::getDefaultLocale();
+        return self::$locale;
     }
 
-    private static function setLocale($localeCode)
+    public static function set($localeCode)
     {
         $repository = self::getRepository();
         $locale     = $repository->findByCode($localeCode);
 
-        if ($locale) {
-            return (self::$locale = $locale);
+        if (!$locale) {
+            return;
         }
 
-        return self::$locale !== null ? self::$locale : self::getDefaultLocale();
+        self::$locale = $locale;
     }
 
     private static function getDefaultLocale()
