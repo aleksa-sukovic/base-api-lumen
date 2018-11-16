@@ -33,7 +33,7 @@ class ObjectRepository
         }
 
         $this->beforeSave($item);
-        $item = $item->save();
+        $item->save();
         if (!$item) {
             throw new ItemNotSavedException;
         }
