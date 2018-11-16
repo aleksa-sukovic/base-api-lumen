@@ -41,6 +41,10 @@ class LocaleManager
 
         self::$locale = $repository->findByCode(self::$defaultLocaleCode);
 
+        if (!self::$locale) {
+            self::$locale = $repository->create(['code' => self::$defaultLocaleCode]);
+        }
+
         return self::$locale;
     }
 
