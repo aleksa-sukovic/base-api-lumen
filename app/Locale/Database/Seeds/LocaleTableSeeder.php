@@ -17,13 +17,11 @@ class LocaleTableSeeder extends Seeder
         DB::table('locales')->insert([
             [
                 'code'       => 'en',
-                'display'    => 'English',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
             ],
             [
                 'code'       => 'me',
-                'display'    => 'Montenegrin',
                 'created_at' => Carbon::now(),
                 'updated_at' =>  Carbon::now()
             ]

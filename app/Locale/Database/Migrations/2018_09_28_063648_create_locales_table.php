@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddTimestampsToLocaleTable extends Migration
+class CreateLocalesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,9 @@ class AddTimestampsToLocaleTable extends Migration
      */
     public function up()
     {
-        Schema::table('locales', function (Blueprint $table) {
+        Schema::create('locales', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('code', 10);
             $table->timestamps();
         });
     }
@@ -25,8 +27,6 @@ class AddTimestampsToLocaleTable extends Migration
      */
     public function down()
     {
-        Schema::table('locales', function (Blueprint $table) {
-            $table->dropTimestamps();
-        });
+        Schema::drop('locales');
     }
 }
