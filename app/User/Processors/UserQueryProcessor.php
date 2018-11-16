@@ -10,6 +10,7 @@ class UserQueryProcessor extends QueryProcessor
         'Aleksa\User\Processors\UserFilterProcessor',
         'Aleksa\User\Processors\UserSearchProcessor',
         'Aleksa\User\Processors\UserOrderProcessor',
-        'Aleksa\User\Processors\UserRangeProcessor'
+        'Aleksa\User\Processors\UserRangeProcessor',
+        'Aleksa\User\Processors\UserPaginationProcessor'
     ];
 }
