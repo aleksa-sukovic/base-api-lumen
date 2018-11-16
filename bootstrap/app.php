@@ -59,7 +59,8 @@ $app->singleton(
 |
 */
 $app->middleware([
-    Aleksa\Library\Middlewares\JsonMiddleware::class
+    Aleksa\Library\Middlewares\JsonMiddleware::class,
+    Aleksa\Library\Middlewares\LocaleMiddleware::class
 ]);
 
 // $app->middleware([
