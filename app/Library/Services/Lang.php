@@ -11,7 +11,7 @@ class Lang
 
     public static function code()
     {
-        return self::locale()->code;
+        return self::get()->code;
     }
 
     public static function get()
