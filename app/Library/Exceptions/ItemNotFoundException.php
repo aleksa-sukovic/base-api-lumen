@@ -7,9 +7,9 @@ use Illuminate\Http\JsonResponse;
 
 class ItemNotFoundException extends BaseException
 {
-    public function __construct()
+    public function __construct($message = 'Item not found')
     {
-        parent::__construct(404, 'Item not found');
+        parent::__construct(404, $message);
     }
 
     public function toArray()
