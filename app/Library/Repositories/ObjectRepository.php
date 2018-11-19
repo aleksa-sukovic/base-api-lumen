@@ -32,12 +32,12 @@ class ObjectRepository
             return $item;
         }
 
-        $this->beforeSave($item);
+        $this->beforeSave($item, $params);
         $item->save();
         if (!$item) {
             throw new ItemNotSavedException;
         }
-        $this->afterSave($item);
+        $this->afterSave($item, $params);
 
         return $item;
     }
@@ -49,9 +49,9 @@ class ObjectRepository
 
         $item   = $this->findById($id);
 
-        $this->beforeSave($item);
+        $this->beforeSave($item, $params);
         $result = $item->update($params);
-        $this->afterSave($item);
+        $this->afterSave($item, $params);
 
         if (!$result) {
             throw new ItemNotUpdatedException;
@@ -81,12 +81,12 @@ class ObjectRepository
         return $item;
     }
 
-    protected function beforeSave($item)
+    protected function beforeSave($item, $params)
     {
         //
     }
 
-    protected function afterSave($item)
+    protected function afterSave($item, $params)
     {
         //
     }
