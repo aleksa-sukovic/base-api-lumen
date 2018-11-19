@@ -4,13 +4,13 @@ namespace Aleksa\Library\Middlewares;
 
 use Closure;
 use Laravel\Lumen\Http\Request;
-use Aleksa\Library\Services\Lang;
+use Aleksa\Library\Services\Locale;
 
 class LocaleMiddleware
 {
     public function handle(Request $request, Closure $next)
     {
-        Lang::set($request->header('locale'));
+        Locale::set($request->header('locale'));
 
         return $next($request);
     }

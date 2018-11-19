@@ -2,7 +2,7 @@
 
 namespace Aleksa\Library\Services;
 
-class Lang
+class Locale
 {
     private static $defaultLocaleCode = 'en';
 
@@ -33,6 +33,19 @@ class Lang
         }
 
         self::$locale = $locale;
+    }
+
+    public static function exists($localeCode)
+    {
+        $repository = self::getRepository();
+
+        if (intval($localeCode) != 0) {
+            $locale = $repository->findById($localeCode);
+        } else {
+            $locale = $repository->findByCode($localeCode);
+        }
+
+        return $locale != null;
     }
 
     private static function getDefaultLocale()
