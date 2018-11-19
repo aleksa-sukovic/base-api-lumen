@@ -60,6 +60,15 @@ class ObjectRepository
         return $item;
     }
 
+    public function save($params)
+    {
+        if (isset($params['id'])) {
+            return $this->update($params['id'], $params);
+        }
+
+        return $this->create($params);
+    }
+
     public function delete($id)
     {
         $item = $this->findById($id, true);
