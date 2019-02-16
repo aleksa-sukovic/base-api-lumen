@@ -9,6 +9,9 @@ use Aleksa\User\Processors\UserQueryProcessor;
 
 class UserRepository extends ObjectRepository
 {
+    protected $saveEvent   = 'Aleksa\User\Events\UserSaved';
+    protected $deleteEvent = 'Aleksa\User\Events\UserDeleted';
+
     public function __construct(User $model, UserValidator $validator, UserQueryProcessor $queryProcessor)
     {
         $this->model          = $model;

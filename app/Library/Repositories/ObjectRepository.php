@@ -5,14 +5,20 @@ namespace Aleksa\Library\Repositories;
 use Aleksa\Library\Exceptions\ItemNotFoundException;
 use Aleksa\Library\Exceptions\ItemNotSavedException;
 use Aleksa\Library\Exceptions\ItemNotUpdatedException;
+use Aleksa\Library\Repositories\Repository;
+use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Model;
+use Aleksa\Library\Events\Event;
 
-class ObjectRepository
+class ObjectRepository implements Repository
 {
     protected $model;
     protected $queryProcessor;
     protected $validator;
+    protected $saveEvent;
+    protected $deleteEvent;
 
-    public function all($params)
+    public function all(array $params): Collection
     {
         $query = $this->queryProcessor->process($this->model->newQuery(), $params);
 
@@ -21,46 +27,7 @@ class ObjectRepository
         return $items;
     }
 
-    public function create($params, $save = true)
-    {
-        $this->validator->validateAndHandle($params);
-
-        $modelClass = get_class($this->model);
-        $item = new $modelClass($params);
-
-        if (!$save) {
-            return $item;
-        }
-
-        $this->beforeSave($item, $params);
-        $item->save();
-        if (!$item) {
-            throw new ItemNotSavedException;
-        }
-        $this->afterSave($item, $params);
-
-        return $item;
-    }
-
-    public function update($id, $params)
-    {
-        $params['id'] = $id;
-        $this->validator->validateAndHandle($params);
-
-        $item   = $this->findById($id);
-
-        $this->beforeSave($item, $params);
-        $result = $item->update($params);
-        $this->afterSave($item, $params);
-
-        if (!$result) {
-            throw new ItemNotUpdatedException;
-        }
-
-        return $item;
-    }
-
-    public function save($params)
+    public function save(array $params): Model
     {
         if (isset($params['id'])) {
             return $this->update($params['id'], $params);
@@ -69,34 +36,90 @@ class ObjectRepository
         return $this->create($params);
     }
 
-    public function delete($id)
+    public function create(array $params): Model
     {
-        $item = $this->findById($id, true);
+        $this->validator->validateAndHandle($params);
 
-        $item->delete();
+        $modelClass = get_class($this->model);
+        $item       = new $modelClass($params);
+
+        $this->beforeSave($params);
+        $item->save();
+        if (!$item) {
+            throw new ItemNotSavedException;
+        }
+        $this->afterSave($item, $params);
+
+        $this->throwEvent($this->saveEvent);
 
         return $item;
     }
 
-    public function findById($id, $throwException = false)
+    public function make(array $params): Model
+    {
+        $this->validator->validateAndHandle($params);
+
+        $modelClass = get_class($this->model);
+        $item       = new $modelClass($params);
+
+        return $item;
+    }
+
+    public function update(int $id, array $params): Model
+    {
+        $params['id'] = $id;
+        $this->validator->validateAndHandle($params);
+
+        $item   = $this->findById($id);
+
+        $this->beforeSave($params);
+        $result = $item->update($params);
+        $this->afterSave($item, $params);
+
+        if (!$result) {
+            throw new ItemNotUpdatedException;
+        }
+
+        $this->throwEvent($this->saveEvent);
+
+        return $item;
+    }
+
+    public function delete(int $id): Model
+    {
+        $item = $this->findById($id);
+
+        $item->delete();
+
+        $this->throwEvent($this->deleteEvent);
+
+        return $item;
+    }
+
+    public function findById(int $id, bool $throw = true): Model
     {
         $model = $this->model;
         $item = $model->where('id', '=', $id)->first();
 
-        if (!$item && $throwException) {
+        if (!$item && $throw) {
             throw new ItemNotFoundException;
         }
 
         return $item;
     }
 
-    protected function beforeSave($item, $params)
+    public function beforeSave(array $params)
     {
         //
     }
 
-    protected function afterSave($item, $params)
+    public function afterSave(Model $item, array $params)
     {
         //
+    }
+
+    protected function throwEvent($eventClass): void
+    {
+        event(new $eventClass);
     }
 }
