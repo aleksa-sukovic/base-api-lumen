@@ -7,8 +7,8 @@ use Aleksa\Library\Processors\BaseProcessor;
 
 class RangeProcessor extends BaseProcessor
 {
-    protected $fromPrefix   = 'from';
-    protected $toPrefix     = 'to';
+    protected $fromPrefix = 'from';
+    protected $toPrefix   = 'to';
 
     public function process(Builder $query, $params): Builder
     {
@@ -27,30 +27,22 @@ class RangeProcessor extends BaseProcessor
         return $query;
     }
 
-    private function processRanges(Builder $query, $params)
-    {
-        foreach ($params as $param => $values) {
-            if (isset($values['from']) && isset($values['to'])) {
-                $query->whereBetween($param, [ $values['from'], $values['to'] ]);
-            } else if (isset($values['from'])) {
-                $query->where($param, '>=', $values['from']);
-            } else if (isset($values['to'])){
-                $query->where($param, '<=', $values['to']);
-            }
-        }
-
-        return $query;
-    }
-
     private function addRangeParam($array, $key, $value)
     {
         $label = $this->isParam($key, 'from') ? 'from' : 'to';
 
-        $key = $this->convertRangeParam($key);
+        $attributeName = $this->getAttributeName($key);
 
-        $array[$key][$label] = $value;
+        $array[$attributeName][$label] = $value;
 
         return $array;
+    }
+
+    protected function getAttributeName($rangeParam)
+    {
+        $type = $this->isParam($rangeParam, 'from') ? 'from' : 'to';
+
+        return substr($rangeParam, strlen($type) + 1);
     }
 
     protected function isParam($param, $type)
@@ -66,10 +58,18 @@ class RangeProcessor extends BaseProcessor
         return false;
     }
 
-    protected function convertRangeParam($param)
+    private function processRanges(Builder $query, $params)
     {
-        $type = $this->isParam($param, 'from') ? 'from' : 'to';
+        foreach ($params as $param => $values) {
+            if (isset($values['from']) && isset($values['to'])) {
+                $query->whereBetween($param, [ $values['from'], $values['to'] ]);
+            } elseif (isset($values['from'])) {
+                $query->where($param, '>=', $values['from']);
+            } elseif (isset($values['to'])) {
+                $query->where($param, '<=', $values['to']);
+            }
+        }
 
-        return substr($param, strlen($type) + 1);
+        return $query;
     }
 }
