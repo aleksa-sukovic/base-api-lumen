@@ -4,10 +4,10 @@ namespace Aleksa\Library\Controllers;
 
 use League\Fractal\Manager;
 use League\Fractal\Resource\Item;
-use Aleksa\Http\Controllers\Controller;
 use League\Fractal\Resource\Collection;
 use League\Fractal\TransformerAbstract;
 use League\Fractal\Serializer\ArraySerializer;
+use Laravel\Lumen\Routing\Controller;
 
 class BaseController extends Controller
 {
