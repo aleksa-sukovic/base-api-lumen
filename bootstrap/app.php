@@ -60,7 +60,8 @@ $app->singleton(
 */
 $app->middleware([
     Aleksa\Library\Middlewares\JsonMiddleware::class,
-    Aleksa\Library\Middlewares\LocaleMiddleware::class
+    Aleksa\Library\Middlewares\LocaleMiddleware::class,
+    Aleksa\Library\Middlewares\CorsMiddleware::class
 ]);
 
 // $app->middleware([
