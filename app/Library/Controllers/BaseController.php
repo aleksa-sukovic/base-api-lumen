@@ -54,7 +54,7 @@ class BaseController extends Controller
         return $this->respond($this->fractal->createData($collection)->toArray(), $statusCode, $message, $additionalData);
     }
 
-    private function respond($data, int $statusCode, string $message = 'Success', array $additionalData = [])
+    public function respond($data, int $statusCode, string $message = 'Success', array $additionalData = [])
     {
         $responseArray = [
             'message' => $message,
