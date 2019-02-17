@@ -4,7 +4,6 @@ namespace Aleksa\Library\Middlewares;
 
 use Closure;
 use Laravel\Lumen\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Response;
 
 class CorsMiddleware
