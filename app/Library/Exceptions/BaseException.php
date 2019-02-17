@@ -25,12 +25,20 @@ class BaseException extends Exception
 
     public function toArray()
     {
+        if (env('APP_DEBUG')) {
+            return $this->toDebugArray();
+        }
+
+        return $this->toProductionArray();
+    }
+
+    protected function toDebugArray()
+    {
         $data = [
-            'class'       => get_class($this),
             'status_code' => $this->getStatusCode(),
-            'file'        => $this->getFile(),
-            'line'        => $this->getLine(),
             'message'     => $this->getMessage(),
+            'class'       => get_class($this),
+            'line'        => $this->getLine(),
         ];
 
         if ($this->withTrace) {
@@ -38,6 +46,14 @@ class BaseException extends Exception
         }
 
         return $data;
+    }
+
+    protected function toProductionArray()
+    {
+        return [
+            'status_code' => $this->getStatusCode(),
+            'message'     => $this->message
+        ];
     }
 
     public function getStatusCode()
@@ -50,7 +66,7 @@ class BaseException extends Exception
         $this->statusCode = $statusCode;
     }
 
-    public function isWithTrace($value)
+    public function withTrace($value)
     {
         $this->withTrace = $value;
     }

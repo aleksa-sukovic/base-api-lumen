@@ -14,9 +14,7 @@ class Handler extends ExceptionHandler
 
     public function report(Exception $exception)
     {
-        if (!$this->isCustomException($exception)) {
-            parent::report($exception);
-        }
+        parent::report($exception);
     }
 
     public function render($request, Exception $exception)
@@ -25,40 +23,69 @@ class Handler extends ExceptionHandler
             return $this->renderCustomException($exception);
         }
 
-        return $this->renderJson($exception);
+        return $this->renderSystemExceptions($exception);
     }
 
-    private function isCustomException($exception)
+    private function isCustomException(Exception $exception)
     {
         return get_class($exception) == 'Aleksa\Library\Exceptions\BaseException' || is_subclass_of($exception, 'Aleksa\Library\Exceptions\BaseException');
     }
 
-    private function renderCustomException($exception)
+    private function renderCustomException(BaseException $exception)
     {
-        try {
-            return response()->json($exception->toArray());
-        } catch (InvalidArgumentException $e) {
-            $exception->isWithTrace(false);
-            return response()->json($exception->toArray(), $exception->getStatusCode());
+        return $this->respond($exception, $exception->toArray());
+    }
+
+    private function renderSystemExceptions(Exception $exception)
+    {
+        if (get_class($exception) == 'Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException') {
+            return $this->renderCustomException(new MethodNotAllowedException);
+        } elseif (get_class($exception) == 'Symfony\Component\HttpKernel\Exception\NotFoundHttpException') {
+            return $this->renderCustomException(new RouteNotFoundException);
+        } else {
+            return $this->renderJson($exception);
         }
     }
 
-    private function renderJson($exception)
+    private function renderJson(Exception $exception)
     {
-        $data = [
-            'class'       => get_class($exception),
+        if (env('APP_DEBUG')) {
+            $data = $this->renderDebugJson($exception);
+        } else {
+            $data = $this->renderProductionJson($exception);
+        }
+
+        return $this->respond($exception, $data);
+    }
+
+    private function renderDebugJson(Exception $exception)
+    {
+        return [
             'status_code' => $exception->getCode(),
+            'message'     => $exception->getMessage(),
+            'class'       => get_class($exception),
             'file'        => $exception->getFile(),
             'line'        => $exception->getLine(),
+            'trace'       => $exception->getTrace()
+        ];
+    }
+
+    private function renderProductionJson(Exception $exception)
+    {
+        return [
+            'status_code' => $exception->getCode(),
             'message'     => $exception->getMessage()
         ];
+    }
 
+    private function respond(Exception $exception, array $data)
+    {
         try {
-            $data['trace'] = $exception->getTrace();
             return response()->json($data);
         } catch (InvalidArgumentException $e) {
             unset($data['trace']);
-            return response()->json($data);
+
+            return response()->json($data)->setStatusCode($exception->getCode());
         }
     }
 }
