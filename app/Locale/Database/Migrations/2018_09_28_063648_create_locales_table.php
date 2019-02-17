@@ -15,7 +15,7 @@ class CreateLocalesTable extends Migration
     {
         Schema::create('locales', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('code', 10);
+            $table->string('code', 10)->default('en');
             $table->timestamps();
         });
     }

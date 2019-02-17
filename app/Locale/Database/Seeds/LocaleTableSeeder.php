@@ -2,15 +2,15 @@
 
 namespace Aleksa\Locale\Database\Seeds;
 
-use Illuminate\Database\Seeder;
 use Aleksa\Locale\Models\Locale;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Carbon;
+use Aleksa\Library\Database\Seeds\TableSeeder;
 
-class LocaleTableSeeder extends Seeder
+class LocaleTableSeeder extends TableSeeder
 {
-    public function run()
+    public function seed()
     {
         DB::table('locales')->truncate();
 

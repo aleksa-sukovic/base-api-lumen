@@ -2,15 +2,15 @@
 
 namespace Aleksa\User\Database\Seeds;
 
-use Illuminate\Database\Seeder;
 use Aleksa\User\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Carbon;
+use Aleksa\Library\Database\Seeds\TableSeeder;
 
-class UserTableSeeder extends Seeder
+class UserTableSeeder extends TableSeeder
 {
-    public function run()
+    public function seed()
     {
         DB::table('users')->truncate();
 
