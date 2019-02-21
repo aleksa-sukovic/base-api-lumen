@@ -14,7 +14,7 @@ class CorsHandler
 
     public function __construct(Request $request)
     {
-        $this->$request = $request;
+        $this->request = $request;
         $this->allowedDomains = explode('|', env('ALLOWED_DOMAINS'));
         $this->allowedMethods = explode('|', env('ALLOWED_METHODS'));
         $this->allowedHeaders = explode('|', env('ALLOWED_HEADERS'));
@@ -25,7 +25,7 @@ class CorsHandler
         return in_array($this->request->header('Origin'), $this->allowedDomains);
     }
 
-    public function modifyResponse(Response $response): Response
+    public function modifyResponse($response)
     {
         $response = $this->addAllowedDomains($response);
         $response = $this->addAllowedMethods($response);
