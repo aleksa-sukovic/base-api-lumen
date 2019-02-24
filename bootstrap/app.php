@@ -35,7 +35,6 @@ $app->singleton(
 /**
  * Aliases
  */
-$app->alias('Aleksa\Library\Services\ApiRequestService', 'Aleksa\Library\Facades\ApiRequest');
 $app->alias('Aleksa\Library\Services\AuthFacadeService', 'Aleksa\Library\Facades\Auth');
 
 /**
