@@ -21,7 +21,8 @@
             "database/factories"
         ],
         "psr-4": {
-            "Aleksa\\": "app/"
+            "Aleksa\\": "app/",
+            "Tests\\": "tests/"
         },
         "files": [
             "bootstrap/utilities.php"
