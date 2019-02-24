@@ -1,9 +1,9 @@
 <?php
 
-namespace Test\ApiRequest;
+namespace Tests\ApiRequest;
 
 use Mockery;
-use Test\TestCase;
+use Tests\TestCase;
 use Illuminate\Http\Request;
 use Aleksa\Library\Facades\ApiRequest;
 
