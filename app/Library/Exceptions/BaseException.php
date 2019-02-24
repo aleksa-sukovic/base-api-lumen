@@ -4,7 +4,6 @@ namespace Aleksa\Library\Exceptions;
 
 use Exception;
 use Illuminate\Http\JsonResponse;
-use InvalidArgumentException;
 
 class BaseException extends Exception
 {
@@ -18,7 +17,7 @@ class BaseException extends Exception
         parent::__construct($message);
     }
 
-    public function render(): JsonResponse
+    public function render()
     {
         return response()->json($this->toArray(), $this->getStatusCode());
     }
