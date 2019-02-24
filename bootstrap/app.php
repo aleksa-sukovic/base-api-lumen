@@ -41,7 +41,6 @@ $app->alias('Aleksa\Library\Services\AuthFacadeService', 'Aleksa\Library\Facades
  * Global Middlewares
  */
 $app->middleware([
-    Aleksa\Library\Middlewares\JsonMiddleware::class,
     Aleksa\Library\Middlewares\LocaleMiddleware::class,
     Aleksa\Library\Middlewares\CorsMiddleware::class
 ]);
