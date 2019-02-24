@@ -43,8 +43,11 @@ $app->alias('Aleksa\Library\Services\AuthFacadeService', 'Aleksa\Library\Facades
 $app->middleware([
     Aleksa\Library\Middlewares\JsonMiddleware::class,
     Aleksa\Library\Middlewares\LocaleMiddleware::class,
-    Aleksa\Library\Middlewares\CorsMiddleware::class,
-    Aleksa\Library\Middlewares\ApiRequestMiddleware::class
+    Aleksa\Library\Middlewares\CorsMiddleware::class
+]);
+
+$app->routeMiddleware([
+    'auth' => Aleksa\Auth\Middlewares\Authenticate::class
 ]);
 
 /**

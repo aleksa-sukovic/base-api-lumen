@@ -31,10 +31,6 @@ class TokenAuthService implements AuthService
     {
         $this->parseRequest($request);
 
-        if ($this->tokenManager->isTokenRevoked($this->token, $this->user)) {
-            throw new TokenException('Invalid Token. Please authenticate.');
-        }
-
         Auth::setUser($this->user);
     }
 
