@@ -56,7 +56,7 @@ class TokenManagerTest extends TestCase
             Carbon::now()->addDays(15)->timestamp
         );
 
-        $this->assertTrue($this->tokenManager->isValid($encodedToken, $this->user));
+        $this->assertTrue($this->tokenManager->validate($encodedToken, $this->user));
     }
 
     public function test_invalid_token_date()
@@ -68,7 +68,7 @@ class TokenManagerTest extends TestCase
         );
 
         $this->expectException('Aleksa\Library\Exceptions\TokenException');
-        $this->assertFalse($this->tokenManager->isValid($encodedToken, $this->user));
+        $this->assertFalse($this->tokenManager->validate($encodedToken, $this->user));
     }
 
     public function test_token_validation_for_user_succeeded()
@@ -79,7 +79,7 @@ class TokenManagerTest extends TestCase
             Carbon::now()->addDays(2)->timestamp
         );
 
-        $this->assertTrue($this->tokenManager->isValid($encodedToken, $this->user));
+        $this->assertTrue($this->tokenManager->validate($encodedToken, $this->user));
     }
 
     public function test_token_validation_for_user_fails()
@@ -94,7 +94,7 @@ class TokenManagerTest extends TestCase
 
         $this->expectException('Aleksa\Library\Exceptions\TokenException');
 
-        $this->tokenManager->isValid($encodedToken, $anotherUser);
+        $this->tokenManager->validate($encodedToken, $anotherUser);
     }
 
     public function test_refreshing_token()
@@ -126,5 +126,20 @@ class TokenManagerTest extends TestCase
         $this->expectException('Aleksa\Library\Exceptions\TokenException');
 
         $this->tokenManager->refresh($token, $this->user);
+    }
+
+    public function test_validation_of_revoked_token()
+    {
+        $token = $this->tokenManager->generateToken(
+            $this->user,
+            Carbon::now()->timestamp,
+            Carbon::now()->addHours(2)->timestamp
+        );
+        $this->user->reauth_requested_at = Carbon::now();
+        $this->user->save();
+
+        $this->expectException('Aleksa\Library\Exceptions\TokenException');
+
+        $this->tokenManager->validate($token, $this->user);
     }
 }

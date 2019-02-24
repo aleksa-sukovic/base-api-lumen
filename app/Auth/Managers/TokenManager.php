@@ -16,12 +16,12 @@ class TokenManager
             $expirationTime = env('AUTH_EXPIRATION_TIME');
         }
 
-        $this->isValid($token, $user);
+        $this->validate($token, $user);
 
         return $this->generateToken($user, Carbon::now()->timestamp, Carbon::now()->addHours($expirationTime)->timestamp);
     }
 
-    public function isValid(string $encodedToken, User $user)
+    public function validate(string $encodedToken, User $user)
     {
         try {
             $this->validateToken($encodedToken, $user);
@@ -37,6 +37,13 @@ class TokenManager
         $token = $this->decode($encodedToken);
 
         $this->validateUserData($token, $user);
+
+        if ($this->isTokenRevoked($token, $user)) {
+            $user->reauth_requested_at = null;
+            $user->save();
+
+            throw new TokenException('Invalid Token. Please authenticate.');
+        }
     }
 
     public function decode($token): array
@@ -53,6 +60,17 @@ class TokenManager
                 throw new TokenException('Invalid access token. Please authenticate.');
             }
         }
+    }
+
+    public function isTokenRevoked(array $token, User $user)
+    {
+        $tokenExpireDate = Carbon::createFromTimestamp($token['exp']);
+
+        if (!$user->reauth_requested_at) {
+            return false;
+        }
+
+        return $tokenExpireDate->gt($user->reauth_requested_at);
     }
 
     public function generate(User $user)
