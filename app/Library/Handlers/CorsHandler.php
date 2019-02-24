@@ -22,7 +22,15 @@ class CorsHandler
 
     public function isAllowed()
     {
-        return in_array($this->request->header('Origin'), $this->allowedDomains);
+        if (in_array($this->request->header('Origin'), $this->allowedDomains)) {
+            return true;
+        }
+
+        if (!$this->request->header('Origin')) {
+            return true;
+        }
+
+        return false;
     }
 
     public function modifyResponse($response)
