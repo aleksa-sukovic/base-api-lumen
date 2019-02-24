@@ -3,7 +3,6 @@
 namespace Aleksa\Library\Exceptions;
 
 use Exception;
-use Illuminate\Http\JsonResponse;
 
 class BaseException extends Exception
 {

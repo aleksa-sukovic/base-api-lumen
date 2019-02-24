@@ -55,7 +55,7 @@ class TokenAuthServiceTest extends TestCase
         $this->request->shouldReceive('header')
             ->once()
             ->with('al-access-token')
-            ->andReturn($this->tokenManager->generate($this->user));
+            ->andReturn($this->tokenManager->generate($this->user)['token']);
 
         $this->authService->authenticateRequest($this->request);
 
@@ -89,7 +89,7 @@ class TokenAuthServiceTest extends TestCase
     public function test_request_authentication_user_not_exists()
     {
         $user = factory(User::class)->make(['id' => 10]);
-        $token = $this->tokenManager->generate($user);
+        $token = $this->tokenManager->generate($user)['token'];
         $this->request->shouldReceive('header')
             ->once()
             ->with('al-access-token')
@@ -109,7 +109,7 @@ class TokenAuthServiceTest extends TestCase
                 $this->user,
                 Carbon::now()->subHours(2)->timestamp,
                 Carbon::now()->addHours(4)->timestamp
-            ));
+            )['token']);
 
         $this->user->reauth_requested_at = Carbon::now();
         $this->user->save();
@@ -121,13 +121,10 @@ class TokenAuthServiceTest extends TestCase
 
     public function test_user_authentication_success()
     {
-        $this->request->shouldReceive('has')->with('email')->andReturnTrue();
-        $this->request->shouldReceive('has')->with('password')->andReturnTrue();
-
-        $this->request->shouldReceive('input')->with('email')
-            ->andReturn('sukovic.aleksa@gmail.com');
-        $this->request->shouldReceive('input')->with('password')
-            ->andReturn('123123');
+        $this->request->shouldReceive('all')->once()->andReturn([
+            'email'    => 'sukovic.aleksa@gmail.com',
+            'password' => '123123'
+        ]);
 
         $data = $this->authService->authenticateUser($this->request);
 
@@ -144,13 +141,10 @@ class TokenAuthServiceTest extends TestCase
 
     public function test_user_authentication_fails()
     {
-        $this->request->shouldReceive('has')->with('email')->andReturnTrue();
-        $this->request->shouldReceive('has')->with('password')->andReturnTrue();
-
-        $this->request->shouldReceive('input')->with('email')
-            ->andReturn('sukovic.aleksa@gmail.com');
-        $this->request->shouldReceive('input')->with('password')
-            ->andReturn('wrong_password');
+        $this->request->shouldReceive('all')->once()->andReturn([
+            'email'    => 'sukovic.aleksa@gmail.com',
+            'password' => 'wrong_password'
+        ]);
 
         $this->expectException('Aleksa\Library\Exceptions\AuthException');
 
@@ -159,13 +153,10 @@ class TokenAuthServiceTest extends TestCase
 
     public function test_user_authentication_invalid_user()
     {
-        $this->request->shouldReceive('has')->with('email')->andReturnTrue();
-        $this->request->shouldReceive('has')->with('password')->andReturnTrue();
-
-        $this->request->shouldReceive('input')->with('email')
-            ->andReturn('invalid@gmail.com');
-        $this->request->shouldReceive('input')->with('password')
-            ->andReturn('123123');
+        $this->request->shouldReceive('all')->once()->andReturn([
+            'email'    => 'invalid@gmail.com',
+            'password' => '123123'
+        ]);
 
         $this->expectException('Aleksa\Library\Exceptions\ItemNotFoundException');
 
@@ -177,7 +168,7 @@ class TokenAuthServiceTest extends TestCase
         $this->request->shouldReceive('header')
             ->once()
             ->with('al-access-token')
-            ->andReturn($this->tokenManager->generate($this->user));
+            ->andReturn($this->tokenManager->generate($this->user)['token']);
 
         $data = $this->authService->refreshAuthentication($this->request);
 
@@ -200,7 +191,7 @@ class TokenAuthServiceTest extends TestCase
 
     public function test_revoke_authentication_success()
     {
-        $token = $this->tokenManager->generate($this->user);
+        $token = $this->tokenManager->generate($this->user)['token'];
         $this->request->shouldReceive('header')->once()
             ->with('al-access-token')->andReturn($token);
 
@@ -215,7 +206,8 @@ class TokenAuthServiceTest extends TestCase
 
     public function test_reset_credentials_succeeded()
     {
-        $this->request->shouldReceive('header')->once()->andReturn($this->tokenManager->generate($this->user));
+        $this->request->shouldReceive('header')->with('al-access-token')->once()
+            ->andReturn($this->tokenManager->generate($this->user)['token']);
         $this->request->shouldReceive('all')->once()->andReturn([
             'password'              => 'changed',
             'password_confirmation' => 'changed',
@@ -225,12 +217,12 @@ class TokenAuthServiceTest extends TestCase
         $this->authService->resetCredentials($this->request);
         $this->user->refresh();
 
-        $this->assertTrue(Hash::check($this->user->password, Hash::make('changed')));
+        $this->assertTrue(Hash::check('changed', $this->user->password));
     }
 
     public function test_reset_credentials_password_mismatch()
     {
-        $this->request->shouldReceive('header')->once()->andReturn($this->tokenManager->generate($this->user));
+        $this->request->shouldReceive('header')->once()->andReturn($this->tokenManager->generate($this->user)['token']);
         $this->request->shouldReceive('all')->once()->andReturn([
             'password'              => 'changed',
             'password_confirmation' => 'changed_wrong',
@@ -244,7 +236,8 @@ class TokenAuthServiceTest extends TestCase
 
     public function test_reset_credentials_old_password_mismatch()
     {
-        $this->request->shouldReceive('header')->once()->andReturn($this->tokenManager->generate($this->user));
+        $this->request->shouldReceive('header')->with('al-access-token')->once()
+            ->andReturn($this->tokenManager->generate($this->user)['token']);
         $this->request->shouldReceive('all')->once()->andReturn([
             'password'              => 'changed',
             'password_confirmation' => 'changed',

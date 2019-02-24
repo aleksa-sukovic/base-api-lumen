@@ -67,6 +67,13 @@ class TokenManager
             'email'          => $user->email
         ];
 
-        return JWT::encode($token, env('AUTH_KEY'));
+        return [
+            'id'             => $user->id,
+            'full_name'      => $user->full_name,
+            'email'          => $user->email,
+            'issued_at'      => Carbon::createFromTimestamp($issuedAt)->toDateTimeString(),
+            'expires_at'     => Carbon::createFromTimestamp($expiresAt)->toDateTimeString(),
+            'token'          => JWT::encode($token, env('AUTH_KEY'))
+        ];
     }
 }

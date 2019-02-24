@@ -40,34 +40,30 @@ class TokenAuthService implements AuthService
 
     public function authenticateUser(Request $request)
     {
-        if (!$request->has('email') || !$request->has('password')) {
-            throw new AuthException('You must provide email and password to authenticate.');
+        $params = $request->all();
+        $validator = Validator::make($params, ['email' => 'required|email', 'password' => 'required']);
+
+        if ($validator->fails()) {
+            throw new ValidationException($validator->errors());
         }
 
-        $user = $this->userRepository->findByEmail($request->input('email'));
-
-        if (!Hash::check($request->input('password'), $user->password)) {
+        $user = $this->userRepository->findByEmail($params['email']);
+        if (!Hash::check($params['password'], $user->password)) {
             throw new AuthException('Wrong password.');
         }
 
         Auth::setUser($user);
 
-        return [
-            'token' => $this->tokenManager->generate($user)
-        ];
+        return $this->tokenManager->generate($user);
     }
 
     public function refreshAuthentication(Request $request)
     {
         $this->parseRequest($request);
 
-        if ($this->tokenManager->isTokenRevoked($this->token, $this->user)) {
-            throw new TokenException('Invalid Token. Please authenticate.');
-        }
+        Auth::setUser($this->user);
 
-        return [
-            'token' => $this->tokenManager->generate($this->user)
-        ];
+        return $this->tokenManager->generate($this->user);
     }
 
     public function revokeAuthentication(Request $request)
@@ -99,8 +95,10 @@ class TokenAuthService implements AuthService
             throw new AuthException('Passwords do not match.');
         }
 
-        $this->user->password = $params['password'];
+        $this->user->password = Hash::make($params['password']);
         $this->user->save();
+
+        return [];
     }
 
     protected function parseRequest(Request $request)
@@ -113,5 +111,9 @@ class TokenAuthService implements AuthService
 
         $this->token = $this->tokenManager->decode($token);
         $this->user = $this->userRepository->findById($this->token['id']);
+
+        if ($this->tokenManager->isTokenRevoked($this->token, $this->user)) {
+            throw new TokenException('Invalid Token. Please authenticate.');
+        }
     }
 }

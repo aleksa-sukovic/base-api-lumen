@@ -5,7 +5,6 @@ namespace Tests\Unit\Auth\TokenAuthService;
 use Tests\TestCase;
 use Aleksa\Auth\Managers\TokenManager;
 use Aleksa\User\Models\User;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Carbon;
 use Aleksa\Library\Exceptions\TokenException;
 
@@ -34,7 +33,7 @@ class TokenManagerTest extends TestCase
     public function test_decoding_token()
     {
         $encoded = $this->tokenManager->generate($this->user);
-        $decoded = $this->tokenManager->decode($encoded);
+        $decoded = $this->tokenManager->decode($encoded['token']);
 
         $this->assertNotNull($encoded);
 
@@ -56,7 +55,7 @@ class TokenManagerTest extends TestCase
             Carbon::now()->addDays(15)->timestamp
         );
 
-        $this->assertNotNull($this->tokenManager->decode($encodedToken));
+        $this->assertNotNull($this->tokenManager->decode($encodedToken['token']));
     }
 
     public function test_invalid_token_date()
@@ -65,7 +64,7 @@ class TokenManagerTest extends TestCase
             $this->user,
             Carbon::now()->subDays(3)->timestamp,
             Carbon::now()->subDays(2)->timestamp
-        );
+        )['token'];
 
         $this->expectException(TokenException::class);
 
@@ -84,7 +83,7 @@ class TokenManagerTest extends TestCase
             $this->user,
             Carbon::now()->timestamp,
             Carbon::now()->addHours(2)->timestamp
-        );
+        )['token'];
         $this->user->reauth_requested_at = Carbon::now();
         $this->user->save();
 

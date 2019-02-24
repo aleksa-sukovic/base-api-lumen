@@ -20,7 +20,7 @@ class Handler extends ExceptionHandler
     public function render($request, Exception $exception)
     {
         if ($this->isCustomException($exception)) {
-            return $this->renderCustomException($exception);
+            return $this->renderCustomException($exception, $exception->getStatusCode());
         }
 
         return $this->renderSystemExceptions($exception);
@@ -33,7 +33,7 @@ class Handler extends ExceptionHandler
 
     private function renderCustomException(BaseException $exception)
     {
-        return $this->respond($exception, $exception->toArray());
+        return $this->respond($exception, $exception->toArray(), $exception->getStatusCode());
     }
 
     private function renderSystemExceptions(Exception $exception)
@@ -43,11 +43,11 @@ class Handler extends ExceptionHandler
         } elseif (get_class($exception) == 'Symfony\Component\HttpKernel\Exception\NotFoundHttpException') {
             return $this->renderCustomException(new RouteNotFoundException);
         } else {
-            return $this->renderJson($exception);
+            return $this->renderJson($exception, $exception->getCode());
         }
     }
 
-    private function renderJson(Exception $exception)
+    private function renderJson(Exception $exception, $statusCode)
     {
         if (env('APP_DEBUG')) {
             $data = $this->renderDebugJson($exception);
@@ -55,7 +55,7 @@ class Handler extends ExceptionHandler
             $data = $this->renderProductionJson($exception);
         }
 
-        return $this->respond($exception, $data);
+        return $this->respond($exception, $data, $statusCode);
     }
 
     private function renderDebugJson(Exception $exception)
@@ -77,14 +77,14 @@ class Handler extends ExceptionHandler
         ];
     }
 
-    private function respond(Exception $exception, array $data)
+    private function respond(Exception $exception, array $data, $statusCode)
     {
         try {
-            return response()->json($data);
+            return response()->json($data)->setStatusCode($statusCode);
         } catch (InvalidArgumentException $e) {
             unset($data['trace']);
 
-            return response()->json($data)->setStatusCode($exception->getCode());
+            return response()->json($data)->setStatusCode($statusCode);
         }
     }
 }

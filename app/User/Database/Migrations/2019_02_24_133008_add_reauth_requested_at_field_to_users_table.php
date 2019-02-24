@@ -14,7 +14,7 @@ class AddReauthRequestedAtFieldToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dateTime('reauth_requested_at')->nullable();
+            $table->dateTime('reauth_requested_at')->nullable()->after('password');
         });
     }
 
