@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\ApiRequest;
+namespace Tests\Unit\ApiRequest;
 
 use Mockery;
 use Tests\TestCase;

@@ -16,4 +16,9 @@ class TestCase extends Test
     {
         return require __DIR__.'/../bootstrap/app.php';
     }
+
+    public function test_working()
+    {
+        $this->assertTrue(true);
+    }
 }

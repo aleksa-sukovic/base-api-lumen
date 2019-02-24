@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Auth\TokenAuthService;
+namespace Tests\Unit\Auth\TokenAuthService;
 
 use Tests\TestCase;
 use Aleksa\Auth\Managers\TokenManager;
