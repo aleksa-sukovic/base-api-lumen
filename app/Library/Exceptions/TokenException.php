@@ -6,9 +6,9 @@ use Aleksa\Library\Exceptions\BaseException;
 
 class TokenException extends BaseException
 {
-    public function __construct($message = 'Token Exception')
+    public function __construct($message = 'Token Exception', $statusCode = 403)
     {
-        parent::__construct(400, $message);
+        parent::__construct($statusCode, $message);
     }
 
     public function toArray()

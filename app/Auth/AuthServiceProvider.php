@@ -3,6 +3,7 @@
 namespace Aleksa\Auth;
 
 use Illuminate\Support\ServiceProvider;
+use Aleksa\Auth\Services\TokenAuthService;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -28,9 +29,7 @@ class AuthServiceProvider extends ServiceProvider
     protected function registerAuthService()
     {
         $this->app->bind('Aleksa\Auth\Services\AuthService', function () {
-            return new \Aleksa\Auth\Services\TokenAuthService(
-                new \Aleksa\Auth\Managers\TokenManager
-            );
+            return app(TokenAuthService::class);
         });
     }
 }

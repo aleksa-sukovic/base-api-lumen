@@ -7,6 +7,7 @@ use Aleksa\Auth\Managers\TokenManager;
 use Aleksa\User\Models\User;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Carbon;
+use Aleksa\Library\Exceptions\TokenException;
 
 class TokenManagerTest extends TestCase
 {
@@ -26,7 +27,6 @@ class TokenManagerTest extends TestCase
 
         $this->tokenManager = new TokenManager;
         $this->user = factory(User::class)->create([
-            'full_name' => 'Aleksa Sukovic',
             'email'     => 'sukovic.aleksa@gmail.com',
         ]);
     }
@@ -56,7 +56,7 @@ class TokenManagerTest extends TestCase
             Carbon::now()->addDays(15)->timestamp
         );
 
-        $this->assertTrue($this->tokenManager->validate($encodedToken, $this->user));
+        $this->assertNotNull($this->tokenManager->decode($encodedToken));
     }
 
     public function test_invalid_token_date()
@@ -67,65 +67,15 @@ class TokenManagerTest extends TestCase
             Carbon::now()->subDays(2)->timestamp
         );
 
-        $this->expectException('Aleksa\Library\Exceptions\TokenException');
-        $this->assertFalse($this->tokenManager->validate($encodedToken, $this->user));
-    }
+        $this->expectException(TokenException::class);
 
-    public function test_token_validation_for_user_succeeded()
-    {
-        $encodedToken = $this->tokenManager->generateToken(
-            $this->user,
-            Carbon::now()->timestamp,
-            Carbon::now()->addDays(2)->timestamp
-        );
+        try {
+            $this->tokenManager->decode($encodedToken);
+        } catch (TokenException $exception) {
+            $this->assertEquals(403, $exception->getStatusCode());
 
-        $this->assertTrue($this->tokenManager->validate($encodedToken, $this->user));
-    }
-
-    public function test_token_validation_for_user_fails()
-    {
-        $encodedToken = $this->tokenManager->generateToken(
-            $this->user,
-            Carbon::now()->timestamp,
-            Carbon::now()->addDays(2)->timestamp
-        );
-
-        $anotherUser = factory(User::class)->create();
-
-        $this->expectException('Aleksa\Library\Exceptions\TokenException');
-
-        $this->tokenManager->validate($encodedToken, $anotherUser);
-    }
-
-    public function test_refreshing_token()
-    {
-        $encodedToken = $this->tokenManager->generateToken(
-            $this->user,
-            Carbon::now()->timestamp,
-            Carbon::now()->addHours(1)->timestamp
-        );
-        $oldToken = $this->tokenManager->decode($encodedToken);
-
-        $refreshedToken = $this->tokenManager->refresh($encodedToken, $this->user, 2);
-        $refreshedToken = $this->tokenManager->decode($refreshedToken);
-
-        $oldExpirationDate = Carbon::createFromTimestamp($oldToken['exp']);
-        $newExpirationDate = Carbon::createFromTimestamp($refreshedToken['exp']);
-
-        $this->assertEquals(1, $oldExpirationDate->diffInHours($newExpirationDate));
-    }
-
-    public function test_refreshing_token_fails()
-    {
-        $token = $this->tokenManager->generateToken(
-            $this->user,
-            Carbon::now()->timestamp,
-            Carbon::now()->subHours(4)->timestamp
-        );
-
-        $this->expectException('Aleksa\Library\Exceptions\TokenException');
-
-        $this->tokenManager->refresh($token, $this->user);
+            throw new TokenException;
+        }
     }
 
     public function test_validation_of_revoked_token()
@@ -138,8 +88,8 @@ class TokenManagerTest extends TestCase
         $this->user->reauth_requested_at = Carbon::now();
         $this->user->save();
 
-        $this->expectException('Aleksa\Library\Exceptions\TokenException');
+        $token = $this->tokenManager->decode($token);
 
-        $this->tokenManager->validate($token, $this->user);
+        $this->assertTrue($this->tokenManager->isTokenRevoked($token, $this->user));
     }
 }

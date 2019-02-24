@@ -10,53 +10,27 @@ use Aleksa\Library\Exceptions\TokenException;
 
 class TokenManager
 {
-    public function refresh(string $token, User $user, $expirationTime = null)
-    {
-        if (!$expirationTime) {
-            $expirationTime = env('AUTH_EXPIRATION_TIME');
-        }
-
-        $this->validate($token, $user);
-
-        return $this->generateToken($user, Carbon::now()->timestamp, Carbon::now()->addHours($expirationTime)->timestamp);
-    }
-
-    public function validate(string $encodedToken, User $user)
-    {
-        try {
-            $this->validateToken($encodedToken, $user);
-
-            return true;
-        } catch (\Firebase\JWT\ExpiredException $e) {
-            throw new TokenException('Your token has expired. Please authenticate.');
-        }
-    }
-
-    protected function validateToken(string $encodedToken, User $user)
-    {
-        $token = $this->decode($encodedToken);
-
-        $this->validateUserData($token, $user);
-
-        if ($this->isTokenRevoked($token, $user)) {
-            $user->reauth_requested_at = null;
-            $user->save();
-
-            throw new TokenException('Invalid Token. Please authenticate.');
-        }
-    }
-
     public function decode($token): array
     {
-        return (array) JWT::decode($token, env('AUTH_KEY'), [env('AUTH_ALGORITHM')]);
+        try {
+            $token = (array) JWT::decode($token, env('AUTH_KEY'), [env('AUTH_ALGORITHM')]);
+
+            $this->validateRequired($token);
+
+            return $token;
+        } catch (\Firebase\JWT\ExpiredException $e) {
+            throw new TokenException('Your token has expired. Please authenticate.');
+        } catch (\Exception $e) {
+            throw new TokenException('Your token is not valid. Please authenticate.');
+        }
     }
 
-    protected function validateUserData(array $token, User $user)
+    protected function validateRequired(array $token)
     {
-        $toValidate = ['email', 'full_name', 'id'];
+        $toValidate = ['email', 'id', 'iss', 'sub', 'exp', 'iat', 'jti'];
 
         foreach ($toValidate as $item) {
-            if (!isset($token[$item]) || $token[$item] != $user[$item]) {
+            if (!isset($token[$item])) {
                 throw new TokenException('Invalid access token. Please authenticate.');
             }
         }
@@ -90,7 +64,6 @@ class TokenManager
             'iat'            => $issuedAt,
             'jti'            => $user->id . '-' . $user->email,
             'id'             => $user->id,
-            'full_name'      => $user->full_name,
             'email'          => $user->email
         ];
 
