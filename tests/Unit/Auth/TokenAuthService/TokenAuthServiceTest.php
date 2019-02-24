@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Aleksa\User\Models\User;
 use Aleksa\Library\Facades\Auth;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Hash;
 
 class TokenAuthServiceTest extends TestCase
 {
@@ -68,7 +69,7 @@ class TokenAuthServiceTest extends TestCase
             ->with('al-access-token')
             ->andReturnNull();
 
-        $this->expectException('Aleksa\Library\Exceptions\TokenException');
+        $this->expectException('Aleksa\Library\Exceptions\AuthException');
 
         $this->authService->authenticateRequest($this->request);
     }
@@ -210,5 +211,48 @@ class TokenAuthServiceTest extends TestCase
         $this->assertEquals(0, Carbon::now()->diffInHours(
             Carbon::createFromTimeString($this->user->reauth_requested_at)
         ));
+    }
+
+    public function test_reset_credentials_succeeded()
+    {
+        $this->request->shouldReceive('header')->once()->andReturn($this->tokenManager->generate($this->user));
+        $this->request->shouldReceive('all')->once()->andReturn([
+            'password'              => 'changed',
+            'password_confirmation' => 'changed',
+            'old_password'          => 123123
+        ]);
+
+        $this->authService->resetCredentials($this->request);
+        $this->user->refresh();
+
+        $this->assertTrue(Hash::check($this->user->password, Hash::make('changed')));
+    }
+
+    public function test_reset_credentials_password_mismatch()
+    {
+        $this->request->shouldReceive('header')->once()->andReturn($this->tokenManager->generate($this->user));
+        $this->request->shouldReceive('all')->once()->andReturn([
+            'password'              => 'changed',
+            'password_confirmation' => 'changed_wrong',
+            'old_password'          => 123123
+        ]);
+
+        $this->expectException('Aleksa\Library\Exceptions\ValidationException');
+
+        $this->authService->resetCredentials($this->request);
+    }
+
+    public function test_reset_credentials_old_password_mismatch()
+    {
+        $this->request->shouldReceive('header')->once()->andReturn($this->tokenManager->generate($this->user));
+        $this->request->shouldReceive('all')->once()->andReturn([
+            'password'              => 'changed',
+            'password_confirmation' => 'changed',
+            'old_password'          => 'wrong_old_password'
+        ]);
+
+        $this->expectException('Aleksa\Library\Exceptions\AuthException');
+
+        $this->authService->resetCredentials($this->request);
     }
 }
