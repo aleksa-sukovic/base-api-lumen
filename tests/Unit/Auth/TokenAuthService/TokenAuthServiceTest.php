@@ -38,7 +38,8 @@ class TokenAuthServiceTest extends TestCase
         $this->authService = app('Aleksa\Auth\Services\TokenAuthService');
         $this->tokenManager = app('Aleksa\Auth\Managers\TokenManager');
         $this->user = factory(User::class)->create([
-            'email' => 'sukovic.aleksa1@gmail.com',
+            'full_name' => 'Aleksa Sukovic',
+            'email'     => 'sukovic.aleksa@gmail.com'
         ]);
         $this->request = Mockery::mock(Request::class)->makePartial();
     }
@@ -115,5 +116,28 @@ class TokenAuthServiceTest extends TestCase
         $this->expectException('Aleksa\Library\Exceptions\TokenException');
 
         $this->authService->authenticateRequest($this->request);
+    }
+
+    public function test_user_authentication_success()
+    {
+        $this->request->shouldReceive('has')->with('email')->andReturnTrue();
+        $this->request->shouldReceive('has')->with('password')->andReturnTrue();
+
+        $this->request->shouldReceive('input')->with('email')
+            ->andReturn('sukovic.aleksa@gmail.com');
+        $this->request->shouldReceive('input')->with('password')
+            ->andReturn('123123');
+
+        $data = $this->authService->authenticateUser($this->request);
+
+        $this->assertEquals($this->user->id, Auth::getUser()->id);
+        $this->assertNotNull($data);
+        $this->assertArrayHasKey('token', $data);
+
+        $decodedToken = $this->tokenManager->decode($data['token']);
+        $this->assertEquals(
+            $this->user->id,
+            $decodedToken['id']
+        );
     }
 }

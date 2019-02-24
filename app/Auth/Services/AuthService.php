@@ -9,7 +9,7 @@ use Aleksa\User\Models\User;
 interface AuthService
 {
     public function authenticateRequest(Request $request);
-    public function authenticateUser(Request $request, User $user);
+    public function authenticateUser(Request $request);
     public function refreshAuthentication(Request $request, User $user);
     public function revokeAuthentication(Request $request, User $user);
     public function resetCredentials(Request $request, User $user);

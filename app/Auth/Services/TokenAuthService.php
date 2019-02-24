@@ -9,6 +9,8 @@ use Aleksa\Auth\Managers\TokenManager;
 use Aleksa\User\Repositories\UserRepository;
 use Aleksa\Library\Facades\Auth;
 use Aleksa\Library\Exceptions\TokenException;
+use Aleksa\Library\Exceptions\AuthException;
+use Illuminate\Support\Facades\Hash;
 
 class TokenAuthService implements AuthService
 {
@@ -50,8 +52,23 @@ class TokenAuthService implements AuthService
         Auth::setUser($user);
     }
 
-    public function authenticateUser(Request $request, User $user)
+    public function authenticateUser(Request $request)
     {
+        if (!$request->has('email') || !$request->has('password')) {
+            throw new AuthException('You must provide email and password to authenticate.');
+        }
+
+        $user = $this->userRepository->findByEmail($request->input('email'));
+
+        if (!Hash::check($request->input('password'), $user->password)) {
+            throw new AuthException('Wrong password.');
+        }
+
+        Auth::setUser($user);
+
+        return [
+            'token' => $this->tokenManager->generate($user)
+        ];
     }
 
     public function refreshAuthentication(Request $request, User $user)
