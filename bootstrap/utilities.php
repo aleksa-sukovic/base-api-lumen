@@ -8,3 +8,10 @@ if (!function_exists('jd')) {
         die;
     }
 }
+
+if (!function_exists('users')) {
+    function users()
+    {
+        return app()->make('Aleksa\User\Repositories\UserRepository');
+    }
+}

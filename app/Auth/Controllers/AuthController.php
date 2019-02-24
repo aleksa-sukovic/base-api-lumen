@@ -37,7 +37,7 @@ class AuthController extends BaseController
     {
         $data = $this->authService->revokeAuthentication($request);
 
-        return $this->respond($data, 200, 'Success revoked all of yours access tokens.');
+        return $this->respond($data, 200, 'Successfully revoked all of yours access tokens.');
     }
 
     public function reset(Request $request)
