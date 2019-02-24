@@ -106,8 +106,8 @@ class TokenAuthServiceTest extends TestCase
             ->with('al-access-token')
             ->andReturn($this->tokenManager->generateToken(
                 $this->user,
-                Carbon::now()->timestamp,
-                Carbon::now()->addHour()->timestamp
+                Carbon::now()->subHours(2)->timestamp,
+                Carbon::now()->addHours(4)->timestamp
             ));
 
         $this->user->reauth_requested_at = Carbon::now();
@@ -139,5 +139,61 @@ class TokenAuthServiceTest extends TestCase
             $this->user->id,
             $decodedToken['id']
         );
+    }
+
+    public function test_user_authentication_fails()
+    {
+        $this->request->shouldReceive('has')->with('email')->andReturnTrue();
+        $this->request->shouldReceive('has')->with('password')->andReturnTrue();
+
+        $this->request->shouldReceive('input')->with('email')
+            ->andReturn('sukovic.aleksa@gmail.com');
+        $this->request->shouldReceive('input')->with('password')
+            ->andReturn('wrong_password');
+
+        $this->expectException('Aleksa\Library\Exceptions\AuthException');
+
+        $this->authService->authenticateUser($this->request);
+    }
+
+    public function test_user_authentication_invalid_user()
+    {
+        $this->request->shouldReceive('has')->with('email')->andReturnTrue();
+        $this->request->shouldReceive('has')->with('password')->andReturnTrue();
+
+        $this->request->shouldReceive('input')->with('email')
+            ->andReturn('invalid@gmail.com');
+        $this->request->shouldReceive('input')->with('password')
+            ->andReturn('123123');
+
+        $this->expectException('Aleksa\Library\Exceptions\ItemNotFoundException');
+
+        $this->authService->authenticateUser($this->request);
+    }
+
+    public function test_token_refresh_success()
+    {
+        $this->request->shouldReceive('header')
+            ->once()
+            ->with('al-access-token')
+            ->andReturn($this->tokenManager->generate($this->user));
+
+        $data = $this->authService->refreshAuthentication($this->request);
+
+        $this->assertNotNull($data);
+        $this->assertArrayHasKey('token', $data);
+
+        $token = $this->tokenManager->decode($data['token']);
+        $this->assertEquals($this->user->id, $token['id']);
+    }
+
+    public function test_token_refresh_failure()
+    {
+        $this->request->shouldReceive('header')->once()
+            ->with('al-access-token')->andReturnNull();
+
+        $this->expectException('Aleksa\Library\Exceptions\AuthException');
+
+        $this->authService->refreshAuthentication($this->request);
     }
 }

@@ -43,9 +43,6 @@ class TokenAuthService implements AuthService
         $user = $this->userRepository->findById($token['id']);
 
         if ($this->tokenManager->isTokenRevoked($token, $user)) {
-            $user->reauth_requested_at = null;
-            $user->save();
-
             throw new TokenException('Invalid Token. Please authenticate.');
         }
 
@@ -71,8 +68,24 @@ class TokenAuthService implements AuthService
         ];
     }
 
-    public function refreshAuthentication(Request $request, User $user)
+    public function refreshAuthentication(Request $request)
     {
+        $token = $request->header('al-access-token');
+
+        if (!$token) {
+            throw new AuthException('You must provide access token.');
+        }
+
+        $token = $this->tokenManager->decode($token);
+        $user = $this->userRepository->findById($token['id']);
+
+        if ($this->tokenManager->isTokenRevoked($token, $user)) {
+            throw new TokenException('Invalid Token. Please authenticate.');
+        }
+
+        return [
+            'token' => $this->tokenManager->generate($user)
+        ];
     }
 
     public function revokeAuthentication(Request $request, User $user)

@@ -21,7 +21,7 @@ class TokenManager
         } catch (\Firebase\JWT\ExpiredException $e) {
             throw new TokenException('Your token has expired. Please authenticate.');
         } catch (\Exception $e) {
-            throw new TokenException('Your token is not valid. Please authenticate.');
+            throw new TokenException('Invalid access token. Please authenticate.');
         }
     }
 
@@ -38,13 +38,13 @@ class TokenManager
 
     public function isTokenRevoked(array $token, User $user)
     {
-        $tokenExpireDate = Carbon::createFromTimestamp($token['exp']);
+        $tokenIssueDate = Carbon::createFromTimestamp($token['iat']);
 
         if (!$user->reauth_requested_at) {
             return false;
         }
 
-        return $tokenExpireDate->gt($user->reauth_requested_at);
+        return $tokenIssueDate->lt($user->reauth_requested_at);
     }
 
     public function generate(User $user)
