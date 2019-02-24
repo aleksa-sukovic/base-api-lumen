@@ -11,6 +11,7 @@ use Aleksa\Library\Facades\Auth;
 use Aleksa\Library\Exceptions\TokenException;
 use Aleksa\Library\Exceptions\AuthException;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Carbon;
 
 class TokenAuthService implements AuthService
 {
@@ -88,8 +89,21 @@ class TokenAuthService implements AuthService
         ];
     }
 
-    public function revokeAuthentication(Request $request, User $user)
+    public function revokeAuthentication(Request $request)
     {
+        $token = $request->header('al-access-token');
+
+        if (!$token) {
+            throw new AuthException('You must provide access token.');
+        }
+
+        $token = $this->tokenManager->decode($token);
+        $user = $this->userRepository->findById($token['id']);
+
+        $user->reauth_requested_at = Carbon::now();
+        $user->save();
+
+        return [];
     }
 
     public function resetCredentials(Request $request, User $user)

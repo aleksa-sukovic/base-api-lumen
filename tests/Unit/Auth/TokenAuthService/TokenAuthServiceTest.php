@@ -196,4 +196,19 @@ class TokenAuthServiceTest extends TestCase
 
         $this->authService->refreshAuthentication($this->request);
     }
+
+    public function test_revoke_authentication_success()
+    {
+        $token = $this->tokenManager->generate($this->user);
+        $this->request->shouldReceive('header')->once()
+            ->with('al-access-token')->andReturn($token);
+
+        $this->authService->revokeAuthentication($this->request);
+        $this->user->refresh();
+
+        $this->assertNotNull($this->user->reauth_requested_at);
+        $this->assertEquals(0, Carbon::now()->diffInHours(
+            Carbon::createFromTimeString($this->user->reauth_requested_at)
+        ));
+    }
 }
