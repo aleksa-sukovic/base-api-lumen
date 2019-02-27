@@ -12,6 +12,7 @@ class UserRepository extends ObjectRepository
 {
     protected $saveEvent = 'Aleksa\User\Events\UserSaved';
     protected $deleteEvent = 'Aleksa\User\Events\UserDeleted';
+    protected $createdEvent = 'Aleksa\User\Events\UserCreated';
 
     public function __construct(User $model, UserValidator $validator, UserQueryProcessor $queryProcessor)
     {

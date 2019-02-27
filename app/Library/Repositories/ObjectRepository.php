@@ -8,7 +8,6 @@ use Aleksa\Library\Exceptions\ItemNotUpdatedException;
 use Aleksa\Library\Repositories\Repository;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
-use Aleksa\Library\Events\Event;
 
 class ObjectRepository implements Repository
 {
@@ -16,6 +15,7 @@ class ObjectRepository implements Repository
     protected $queryProcessor;
     protected $validator;
     protected $saveEvent;
+    protected $createEvent;
     protected $deleteEvent;
 
     public function all(array $params): Collection
@@ -41,7 +41,7 @@ class ObjectRepository implements Repository
         $this->validator->validateAndHandle($params);
 
         $modelClass = get_class($this->model);
-        $item       = new $modelClass($params);
+        $item = new $modelClass($params);
 
         $this->beforeSave($params);
         $item->save();
@@ -50,6 +50,7 @@ class ObjectRepository implements Repository
         }
         $this->afterSave($item, $params);
 
+        $this->throwEvent($this->createEvent);
         $this->throwEvent($this->saveEvent);
 
         return $item;
@@ -60,7 +61,7 @@ class ObjectRepository implements Repository
         $this->validator->validateAndHandle($params);
 
         $modelClass = get_class($this->model);
-        $item       = new $modelClass($params);
+        $item = new $modelClass($params);
 
         return $item;
     }
@@ -70,7 +71,7 @@ class ObjectRepository implements Repository
         $params['id'] = $id;
         $this->validator->validateAndHandle($params);
 
-        $item   = $this->findById($id);
+        $item = $this->findById($id);
 
         $this->beforeSave($params);
         $result = $item->update($params);
@@ -120,6 +121,8 @@ class ObjectRepository implements Repository
 
     protected function throwEvent($eventClass): void
     {
-        event(new $eventClass);
+        if ($eventClass) {
+            event(new $eventClass);
+        }
     }
 }
