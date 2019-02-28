@@ -55,5 +55,6 @@ $app->routeMiddleware([
 $app->register(Aleksa\Locale\LocaleServiceProvider::class);
 $app->register(Aleksa\User\UserServiceProvider::class);
 $app->register(Aleksa\Auth\AuthServiceProvider::class);
+$app->register(Aleksa\UserGroup\UserGroupServiceProvider::class);
 
 return $app;

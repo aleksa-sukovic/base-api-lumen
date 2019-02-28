@@ -9,6 +9,7 @@ class UserFilterProcessor extends FilterProcessor
     protected $processableParams = [
         'id',
         'email',
-        'gender'
+        'gender',
+        'group_id'
     ];
 }
