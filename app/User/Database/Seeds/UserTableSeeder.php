@@ -20,6 +20,7 @@ class UserTableSeeder extends TableSeeder
                 'email'      => 'sukovic.aleksa@gmail.com',
                 'password'   => Hash::make('123123'),
                 'gender'     => 'm',
+                'group_id'   => 1,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
             ]

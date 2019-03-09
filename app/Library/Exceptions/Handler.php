@@ -42,6 +42,8 @@ class Handler extends ExceptionHandler
             return $this->renderCustomException(new MethodNotAllowedException);
         } elseif (get_class($exception) == 'Symfony\Component\HttpKernel\Exception\NotFoundHttpException') {
             return $this->renderCustomException(new RouteNotFoundException);
+        } elseif (get_class($exception) == 'Illuminate\Auth\Access\AuthorizationException') {
+            return $this->renderCustomException(new UnauthorizedException);
         } else {
             return $this->renderJson($exception, $exception->getCode());
         }
@@ -79,6 +81,8 @@ class Handler extends ExceptionHandler
 
     private function respond(Exception $exception, array $data, $statusCode)
     {
+        $statusCode = $statusCode == 0 ? 500 : $statusCode;
+
         try {
             return response()->json($data)->setStatusCode($statusCode);
         } catch (InvalidArgumentException $e) {

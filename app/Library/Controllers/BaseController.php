@@ -18,11 +18,27 @@ class BaseController extends Controller
 
     public function __construct()
     {
-        $this->request    = app('request');
-        $this->fractal    = new Manager();
+        $this->request = app('request');
+        $this->fractal = new Manager();
         $this->statusCode = 200;
         $this->fractal->setSerializer(new ArraySerializer);
+        $this->parseIncludes();
     }
+
+    protected function parseIncludes()
+    {
+        if (!$this->request->isMethod('get')) {
+            return;
+        }
+
+        if (!$this->request->has('include')) {
+            return;
+        }
+
+        $includes = $this->request->input('include');
+        $this->fractal->parseIncludes($includes);
+    }
+
 
     public function respondSingle($data, int $statusCode = null, string $message = 'Success', array $additionalData = [], $customTransformer = null)
     {
@@ -57,7 +73,7 @@ class BaseController extends Controller
     public function respond($data, int $statusCode, string $message = 'Success', array $additionalData = [])
     {
         $responseArray = [
-            'message' => $message,
+            'message'     => $message,
             'status_code' => $statusCode,
         ];
 
