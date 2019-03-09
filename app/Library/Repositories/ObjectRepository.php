@@ -20,6 +20,8 @@ class ObjectRepository implements Repository
 
     public function all(array $params): Collection
     {
+        $params = $this->processParams($params);
+
         $query = $this->queryProcessor->process($this->model->newQuery(), $params);
 
         $items = $query->get();
@@ -38,6 +40,8 @@ class ObjectRepository implements Repository
 
     public function create(array $params): Model
     {
+        $params = $this->processParams($params);
+
         $this->validator->validateAndHandle($params);
 
         $modelClass = get_class($this->model);
@@ -58,6 +62,7 @@ class ObjectRepository implements Repository
 
     public function make(array $params): Model
     {
+        $params = $this->processParams($params);
         $this->validator->validateAndHandle($params);
 
         $modelClass = get_class($this->model);
@@ -68,6 +73,7 @@ class ObjectRepository implements Repository
 
     public function update(int $id, array $params): Model
     {
+        $params = $this->processParams($params);
         $params['id'] = $id;
         $this->validator->validateAndHandle($params);
 
@@ -119,10 +125,20 @@ class ObjectRepository implements Repository
         //
     }
 
+    public function processParams($params = []): array
+    {
+        return $params;
+    }
+
     protected function throwEvent($eventClass): void
     {
         if ($eventClass) {
             event(new $eventClass);
         }
+    }
+
+    public function getModel(): Model
+    {
+        return $this->model;
     }
 }
