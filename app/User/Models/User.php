@@ -15,4 +15,29 @@ class User extends Model
     {
         return $this->belongsTo('Aleksa\UserGroup\Models\UserGroup');
     }
+
+    public function hasAdminPrivileges()
+    {
+        return $this->isSuperAdmin() || $this->isAdmin();
+    }
+
+    public function isSuperAdmin()
+    {
+        return $this->group->name === 'super-admin';
+    }
+
+    public function isAdmin()
+    {
+        return $this->group->name === 'admin';
+    }
+
+    public function isEditor()
+    {
+        return $this->group->name === 'editor';
+    }
+
+    public function isUser()
+    {
+        return $this->group->name === 'user';
+    }
 }
