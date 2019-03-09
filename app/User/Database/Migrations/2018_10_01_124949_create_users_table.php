@@ -6,7 +6,6 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateUsersTable extends Migration
 {
-
     public function up()
     {
         Schema::create('users', function (Blueprint $table) {
@@ -24,6 +23,6 @@ class CreateUsersTable extends Migration
 
     public function down()
     {
-        Schema::dropTable('users');
+        Schema::drop('users');
     }
 }

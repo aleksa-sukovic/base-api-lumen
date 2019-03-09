@@ -3,13 +3,12 @@
 namespace Aleksa\Library\Exceptions;
 
 use Aleksa\Library\Exceptions\BaseException;
-use Illuminate\Http\JsonResponse;
 
-class ItemNotFoundException extends BaseException
+class TokenException extends BaseException
 {
-    public function __construct($message = 'Item not found')
+    public function __construct($message = 'Token Exception', $statusCode = 403)
     {
-        parent::__construct(404, $message);
+        parent::__construct($statusCode, $message);
     }
 
     public function toArray()

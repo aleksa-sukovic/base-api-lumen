@@ -3,13 +3,12 @@
 namespace Aleksa\Library\Exceptions;
 
 use Aleksa\Library\Exceptions\BaseException;
-use Illuminate\Http\JsonResponse;
 
-class ItemNotFoundException extends BaseException
+class AuthException extends BaseException
 {
-    public function __construct($message = 'Item not found')
+    public function __construct($message = 'Auth Exception')
     {
-        parent::__construct(404, $message);
+        parent::__construct(400, $message);
     }
 
     public function toArray()

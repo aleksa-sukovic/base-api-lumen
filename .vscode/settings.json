@@ -1,7 +1,22 @@
 {
     "cSpell.words": [
         "aleksa",
+        "autoload",
+        "autoloader",
+        "classmap",
+        "dev",
+        "faker",
+        "fzaninotto",
+        "gmail",
         "laravel",
-        "middlewares"
+        "middlewares",
+        "optimize",
+        "phpdotenv",
+        "phpunit",
+        "reauth",
+        "sukovic",
+        "validators",
+        "vlucas",
+        "šuković"
     ]
 }

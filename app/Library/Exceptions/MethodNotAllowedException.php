@@ -14,8 +14,10 @@ class MethodNotAllowedException extends BaseException
 
     public function toArray()
     {
-        $array         = parent::toArray();
-        $array['data'] = [];
-        return $array;
+        return  [
+            'status_code' => $this->getStatusCode(),
+            'message'     => $this->getMessage(),
+            'data'        => []
+        ];
     }
 }

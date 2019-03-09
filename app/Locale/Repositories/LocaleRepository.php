@@ -9,13 +9,13 @@ use Aleksa\Locale\Processors\LocaleQueryProcessor;
 
 class LocaleRepository extends ObjectRepository
 {
-    protected $saveEvent   = 'Aleksa\Locale\Events\LocaleSaved';
+    protected $saveEvent = 'Aleksa\Locale\Events\LocaleSaved';
     protected $deleteEvent = 'Aleksa\Locale\Events\LocaleDeleted';
 
     public function __construct(Locale $model, LocaleValidator $validator, LocaleQueryProcessor $queryProcessor)
     {
-        $this->model          = $model;
-        $this->validator      = $validator;
+        $this->model = $model;
+        $this->validator = $validator;
         $this->queryProcessor = $queryProcessor;
     }
 
