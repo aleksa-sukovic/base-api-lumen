@@ -12,7 +12,7 @@ class CreateUsersTable extends Migration
             $table->increments('id');
             $table->string('full_name')->default('');
             $table->string('email')->default('');
-            $table->timestamp('birth_date');
+            $table->timestamp('birth_date')->nullable();
             $table->string('gender')->default('');
             $table->string('password')->default('');
             $table->timestamps();
