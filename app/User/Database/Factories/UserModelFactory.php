@@ -21,4 +21,31 @@ class UserModelFactory extends ObjectFactory
             'gender'     => $generator->randomElement(['m', 'f'])
         ];
     }
+
+    protected function registerStates()
+    {
+        $this->factory->state('Aleksa\User\Models\User', 'super-admin', function () {
+            return [
+                'group_id' => 1
+            ];
+        });
+
+        $this->factory->state('Aleksa\User\Models\User', 'admin', function () {
+            return [
+                'group_id' => 2
+            ];
+        });
+
+        $this->factory->state('Aleksa\User\Models\User', 'editor', function () {
+            return [
+                'group_id' => 3
+            ];
+        });
+
+        $this->factory->state('Aleksa\User\Models\User', 'user', function () {
+            return [
+                'group_id' => 4
+            ];
+        });
+    }
 }
