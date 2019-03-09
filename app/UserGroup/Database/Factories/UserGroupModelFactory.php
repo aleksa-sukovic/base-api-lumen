@@ -4,6 +4,7 @@ namespace Aleksa\UserGroup\Database\Factories;
 
 use Aleksa\Library\Database\Factories\ObjectFactory;
 use Faker\Generator;
+use Illuminate\Support\Carbon;
 
 class UserGroupModelFactory extends ObjectFactory
 {
