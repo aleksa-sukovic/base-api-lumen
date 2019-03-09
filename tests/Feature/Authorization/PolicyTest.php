@@ -18,7 +18,7 @@ class PolicyTest extends TestCase
      */
     protected $controller;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

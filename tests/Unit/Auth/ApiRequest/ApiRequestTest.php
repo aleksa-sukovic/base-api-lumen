@@ -11,12 +11,12 @@ class ApiRequestServiceTest extends TestCase
 {
     protected $request;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->request = Mockery::mock(Request::class);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         Mockery::close();
     }

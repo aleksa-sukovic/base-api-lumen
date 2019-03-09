@@ -11,7 +11,7 @@ class UserTest extends TestCase
 {
     use EnvironmentSeeds;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

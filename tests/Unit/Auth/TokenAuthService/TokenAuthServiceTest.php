@@ -32,7 +32,7 @@ class TokenAuthServiceTest extends TestCase
      */
     protected $user;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -45,7 +45,7 @@ class TokenAuthServiceTest extends TestCase
         $this->request = Mockery::mock(Request::class)->makePartial();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         Mockery::close();
     }
