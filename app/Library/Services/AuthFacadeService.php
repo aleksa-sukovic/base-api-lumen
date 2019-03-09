@@ -21,4 +21,9 @@ class AuthFacadeService
     {
         return $this->user;
     }
+
+    public function isLoggedIn(): bool
+    {
+        return $this->user != null;
+    }
 }
