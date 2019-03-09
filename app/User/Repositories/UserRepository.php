@@ -7,6 +7,7 @@ use Aleksa\User\Validators\UserValidator;
 use Aleksa\Library\Repositories\ObjectRepository;
 use Aleksa\User\Processors\UserQueryProcessor;
 use Aleksa\Library\Exceptions\ItemNotFoundException;
+use Aleksa\Library\Facades\Auth;
 
 class UserRepository extends ObjectRepository
 {
@@ -30,5 +31,15 @@ class UserRepository extends ObjectRepository
         }
 
         return $user;
+    }
+
+    public function processParams($params = []): array
+    {
+        // Only super-admins can change groups
+        if (isset($params['group_id']) && (!Auth::isLoggedIn() || !Auth::getUser()->isSuperAdmin())) {
+            unset($params['group_id']);
+        }
+
+        return $params;
     }
 }
