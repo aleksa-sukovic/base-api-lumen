@@ -20,7 +20,7 @@ class LocaleServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom('app/Locale/Database/Migrations');
 
         if (in_array(app()->environment(), ['local', 'staging', 'testing'])) {
-            app(LocaleModelFactory::class)->register();
+            app(LocaleModelFactory::class)->register(null);
         }
 
         Gate::policy(Locale::class, LocalePolicy::class);

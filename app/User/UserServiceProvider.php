@@ -20,7 +20,7 @@ class UserServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(base_path('app/User/Database/Migrations'));
 
         if (in_array(app()->environment(), ['local', 'staging', 'testing'])) {
-            app(UserModelFactory::class)->register();
+            app(UserModelFactory::class)->register(null);
         }
 
         Gate::policy(User::class, UserPolicy::class);

@@ -17,7 +17,7 @@ class UserGroupServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(base_path('app/UserGroup/Database/Migrations'));
 
         if (in_array(app()->environment(), ['local', 'staging', 'testing'])) {
-            app(UserGroupModelFactory::class)->register();
+            app(UserGroupModelFactory::class)->register(null);
         }
 
         include __DIR__ . '/routes.php';
