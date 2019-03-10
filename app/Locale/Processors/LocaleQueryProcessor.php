@@ -2,13 +2,19 @@
 
 namespace Aleksa\Locale\Processors;
 
-use Aleksa\Library\Processors\QueryProcessor;
+use Aleksa\Library\Processors\TranslationQueryProcessor;
 
-class LocaleQueryProcessor extends QueryProcessor
+class LocaleQueryProcessor extends TranslationQueryProcessor
 {
+    protected $translationTableName = 'locale_translations';
+
     protected $processors = [
         'Aleksa\Locale\Processors\LocaleFilterProcessor',
         'Aleksa\Locale\Processors\LocaleSearchProcessor',
         'Aleksa\Locale\Processors\LocaleOrderProcessor'
+    ];
+
+    protected $translationProcessors = [
+        //
     ];
 }

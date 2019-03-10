@@ -22,14 +22,12 @@ class ObjectTranslationRepository extends ObjectRepository
         $query = $this->model->newQuery();
 
         $query = $this->join()
-            ->where('locale_id', '=', LocaleService::get()->id)
-            ->select($this->tableName . '.*');
+            ->where('locale_id', '=', LocaleService::get()->id);
 
         $query = $this->queryProcessor->process($query, $params);
+        $query = $query->select($this->tableName . '.*');
 
-        $items = $query->get();
-
-        return $items;
+        return $query->get();
     }
 
     public function afterSave(Model $item, array $params)
