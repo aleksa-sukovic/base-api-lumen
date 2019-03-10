@@ -7,6 +7,10 @@ use League\Fractal\TransformerAbstract;
 
 class LocaleTranslationTransformer extends TransformerAbstract
 {
+    protected $availableIncludes = [
+        'locale'
+    ];
+
     public function transform(LocaleTranslation $localeTranslation)
     {
         return [
@@ -17,5 +21,13 @@ class LocaleTranslationTransformer extends TransformerAbstract
             'created_at'             => (string)$localeTranslation->created_at,
             'updated_at'             => (string)$localeTranslation->updated_at
         ];
+    }
+
+    public function includeLocale(LocaleTranslation $localeTranslation)
+    {
+        $localeTransformer = app('Aleksa\Locale\Transformers\LocaleTransformer');
+        if ($localeTranslation->locale) {
+            return $this->item($localeTranslation->locale, $localeTransformer);
+        }
     }
 }
