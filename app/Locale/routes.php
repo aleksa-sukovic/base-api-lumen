@@ -9,6 +9,9 @@ $app->router->group(
         $app->router->post('/locales', 'Aleksa\Locale\Controllers\LocaleController@store');
         $app->router->put('/locales/{id:[0-9]+}', 'Aleksa\Locale\Controllers\LocaleController@update');
         $app->router->delete('/locales/{id:[0-9]+}', 'Aleksa\Locale\Controllers\LocaleController@destroy');
+
+        $app->router->delete('/locales/{id:[0-9]+}/translations/{translationId:[0-9]+}', 'Aleksa\Locale\Controllers\LocaleController@destroyTranslationById');
+        $app->router->delete('/locales/{id:[0-9]+}/translation', 'Aleksa\Locale\Controllers\LocaleController@destroyTranslation');
     }
 );
 

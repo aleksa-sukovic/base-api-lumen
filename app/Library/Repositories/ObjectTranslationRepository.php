@@ -5,6 +5,8 @@ namespace Aleksa\Library\Repositories;
 use Illuminate\Support\Collection;
 use Aleksa\Library\Services\LocaleService;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use Aleksa\Library\Exceptions\ItemNotFoundException;
 
 class ObjectTranslationRepository extends ObjectRepository
 {
@@ -19,13 +21,9 @@ class ObjectTranslationRepository extends ObjectRepository
         $params = $this->processParams($params);
         $query = $this->model->newQuery();
 
-        $query = $query->join(
-            $this->translationTableName,
-            $this->tableName . '.' . $this->parentPrimaryKey,
-            '=',
-            $this->translationTableName . '.' . $this->translationForeignKey
-        )->where('locale_id', '=', LocaleService::get()->id)
-        ->select($this->tableName . '.*');
+        $query = $this->join()
+            ->where('locale_id', '=', LocaleService::get()->id)
+            ->select($this->tableName . '.*');
 
         $query = $this->queryProcessor->process($query, $params);
 
@@ -54,25 +52,82 @@ class ObjectTranslationRepository extends ObjectRepository
 
     protected function saveTranslation(Model $item, $translationData = [])
     {
-        if (!isset($translationData['locale_id'])) {
-            $translationData['locale_id'] = LocaleService::get()->id;
-        }
+        $translationData['locale_id'] = $translationData['locale_id'] ?: LocaleService::get()->id;
         $translationData[$this->translationForeignKey] = $item[$this->parentPrimaryKey];
 
-        if (($existing = $this->getTranslation($translationData['locale_id'])->first())) {
+        if (($existing = $this->getTranslation($item->id, $translationData['locale_id'])->first())) {
             $translationData['id'] = $existing->id;
         }
 
         $this->translationRepository->save($translationData);
     }
 
-    protected function getTranslation($locale = 'en')
+    public function getTranslation($itemId, $localeId = null): Builder
+    {
+        $localeId = $localeId ?: LocaleService::get()->id;
+
+        $translation = $this->getTranslations($itemId)
+            ->where('locale_id', '=', $localeId);
+
+        if (!$translation->first()) {
+            throw new ItemNotFoundException('Translation not found.');
+        }
+
+        return $translation;
+    }
+
+    public function getTranslationById($itemId, $translationId): Model
+    {
+        $translation = $this->getTranslations($itemId)
+            ->where($this->translationTableName . '.id', '=', $translationId)->first();
+
+        if (!$translation) {
+            throw new ItemNotFoundException('Translation not found.');
+        }
+
+        return $translation;
+    }
+
+    public function getTranslations($itemId): Builder
+    {
+        $query = $this->join()->where($this->tableName . '.' . $this->parentPrimaryKey, '=', $itemId);
+
+        return $query->select($this->translationTableName . '.*');
+    }
+
+    public function removeTranslation($itemId)
+    {
+        $translation = $this->getTranslation($itemId)->first();
+
+        return $this->removeTranslationModel($itemId, $translation);
+    }
+
+    public function removeTranslationById($id, $translationId)
+    {
+        $translation = $this->getTranslationById($id, $translationId);
+
+        return $this->removeTranslationModel($id, $translation);
+    }
+
+    private function removeTranslationModel($itemId, $translation)
+    {
+        $translation = $this->translationRepository->delete($translation->id);
+
+        if (!$this->getTranslations($itemId)->get()->count()) {
+            $this->model->where($this->parentPrimaryKey, '=', $itemId)->delete();
+            $this->throwEvent($this->deleteEvent);
+        }
+
+        return $translation;
+    }
+
+    private function join(): Builder
     {
         return $this->model->newQuery()->join(
             $this->translationTableName,
             $this->tableName . '.' . $this->parentPrimaryKey,
             '=',
             $this->translationTableName . '.' . $this->translationForeignKey
-        )->where('locale_id', '=', $locale);
+        );
     }
 }
