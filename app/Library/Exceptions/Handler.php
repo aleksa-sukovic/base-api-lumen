@@ -31,9 +31,9 @@ class Handler extends ExceptionHandler
         return get_class($exception) == 'Aleksa\Library\Exceptions\BaseException' || is_subclass_of($exception, 'Aleksa\Library\Exceptions\BaseException');
     }
 
-    private function renderCustomException(BaseException $exception)
+    private function renderCustomException(Exception $exception)
     {
-        return $this->respond($exception, $exception->toArray(), $exception->getStatusCode());
+        return $this->respond($exception->toArray(), $exception->getStatusCode());
     }
 
     private function renderSystemExceptions(Exception $exception)
@@ -45,11 +45,11 @@ class Handler extends ExceptionHandler
         } elseif (get_class($exception) == 'Illuminate\Auth\Access\AuthorizationException') {
             return $this->renderCustomException(new UnauthorizedException);
         } else {
-            return $this->renderJson($exception, $exception->getCode());
+            return $this->renderJson($exception);
         }
     }
 
-    private function renderJson(Exception $exception, $statusCode)
+    private function renderJson(Exception $exception)
     {
         if (env('APP_DEBUG')) {
             $data = $this->renderDebugJson($exception);
@@ -57,7 +57,7 @@ class Handler extends ExceptionHandler
             $data = $this->renderProductionJson($exception);
         }
 
-        return $this->respond($exception, $data, $statusCode);
+        return $this->respond($data);
     }
 
     private function renderDebugJson(Exception $exception)
@@ -79,9 +79,11 @@ class Handler extends ExceptionHandler
         ];
     }
 
-    private function respond(Exception $exception, array $data, $statusCode)
+    private function respond(array $data, $statusCode = null)
     {
-        $statusCode = $statusCode == 0 ? 500 : $statusCode;
+        if (!$statusCode) {
+            $statusCode = 500;
+        }
 
         try {
             return response()->json($data)->setStatusCode($statusCode);
