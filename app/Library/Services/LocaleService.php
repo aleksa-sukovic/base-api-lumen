@@ -6,7 +6,7 @@ class LocaleService
 {
     private static $defaultLocaleCode = 'en';
 
-    private static $locale     = null;
+    private static $locale = null;
     private static $repository = null;
 
     public static function code()
@@ -39,7 +39,7 @@ class LocaleService
     public static function set($localeCode)
     {
         $repository = self::getRepository();
-        $locale     = $repository->findByCode($localeCode);
+        $locale = $repository->findByCode($localeCode);
 
         if (!$locale) {
             return;
