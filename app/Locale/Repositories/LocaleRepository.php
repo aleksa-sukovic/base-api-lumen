@@ -5,10 +5,10 @@ namespace Aleksa\Locale\Repositories;
 use Aleksa\Locale\Models\Locale;
 use Aleksa\Locale\Validators\LocaleValidator;
 use Aleksa\Locale\Processors\LocaleQueryProcessor;
-use Aleksa\Library\Repositories\ObjectTranslationRepository;
 use Aleksa\Locale\Translation\Repositories\LocaleTranslationRepository;
+use Aleksa\Library\Repositories\TranslationObjectRepository;
 
-class LocaleRepository extends ObjectTranslationRepository
+class LocaleRepository extends TranslationObjectRepository
 {
     protected $tableName = 'locales';
     protected $translationTableName = 'locale_translations';

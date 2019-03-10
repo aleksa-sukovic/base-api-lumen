@@ -4,7 +4,7 @@ namespace Aleksa\Library\Controllers;
 
 use Aleksa\Library\Services\LocaleService;
 
-class ObjectTranslationController extends ObjectController
+class TranslationObjectController extends ObjectController
 {
     public function destroyTranslationById($id, $translationId)
     {

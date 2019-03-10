@@ -4,7 +4,7 @@ namespace Aleksa\Library\Processors;
 
 use Illuminate\Database\Eloquent\Builder;
 
-class SearchTranslationProcessor extends TranslationBaseProcessor
+class TranslationSearchProcessor extends TranslationBaseProcessor
 {
     public function process(Builder $query, $params, $translationTableName = ''): Builder
     {

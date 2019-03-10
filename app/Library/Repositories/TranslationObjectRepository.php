@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Aleksa\Library\Exceptions\ItemNotFoundException;
 
-class ObjectTranslationRepository extends ObjectRepository
+class TranslationObjectRepository extends ObjectRepository
 {
     protected $tableName;
     protected $translationTableName;
