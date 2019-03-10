@@ -19,6 +19,7 @@ class TokenAuthService implements AuthService
     protected $userRepository;
     protected $token;
     protected $user;
+    protected $throwAuthException;
 
     public function __construct(TokenManager $tokenManager, TokenPasswordHandler $passwordHandler, UserRepository $userRepository)
     {
@@ -71,12 +72,24 @@ class TokenAuthService implements AuthService
         return [];
     }
 
+    public function shouldThrowAuthException(): bool
+    {
+        return $this->throwAuthException;
+    }
+
+    public function setShouldThrowAuthException(bool $throw): void
+    {
+        $this->throwAuthException = $throw;
+    }
+
     protected function validateRequest(Request $request)
     {
         $token = $request->header('al-access-token');
 
-        if (!$token) {
+        if (!$token && $this->shouldThrowAuthException()) {
             throw new AuthException('You must provide access token.');
+        } elseif (!$token) {
+            return;
         }
 
         $this->token = $this->tokenManager->decode($token);

@@ -3,7 +3,7 @@
 $app = app();
 
 $app->router->group(
-    ['prefix' => 'v1', 'middleware' => 'auth'],
+    ['prefix' => 'v1', 'middleware' => 'auth:true'],
     function () use ($app) {
         $app->router->get('/locales/{id:[0-9]+}', 'Aleksa\Locale\Controllers\LocaleController@show');
         $app->router->post('/locales', 'Aleksa\Locale\Controllers\LocaleController@store');
@@ -16,7 +16,7 @@ $app->router->group(
 );
 
 $app->router->group(
-    ['prefix' => 'v1'],
+    ['prefix' => 'v1', 'middleware' => 'auth:true'],
     function () use ($app) {
         $app->router->get('/locales', 'Aleksa\Locale\Controllers\LocaleController@index');
     }
