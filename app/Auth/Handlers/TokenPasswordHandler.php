@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Aleksa\Library\Exceptions\AuthException;
 use Aleksa\Library\Exceptions\ValidationException;
+use Aleksa\Library\Services\Translator;
 
 class TokenPasswordHandler
 {
@@ -23,7 +24,7 @@ class TokenPasswordHandler
         $user = users()->findByEmail($params['email']);
 
         if (!Hash::check($params['password'], $user->password)) {
-            throw new AuthException('Wrong password.');
+            throw new AuthException(Translator::get('exceptions.auth.password'));
         }
 
         return $user;
@@ -44,7 +45,7 @@ class TokenPasswordHandler
         }
 
         if (!Hash::check($params['old_password'], $user->password)) {
-            throw new AuthException('Passwords do not match.');
+            throw new AuthException(Translator::get('exceptions.auth.password.missmatch'));
         }
 
         $user->password = Hash::make($params['password']);

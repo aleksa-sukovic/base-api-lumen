@@ -7,6 +7,7 @@ use Aleksa\User\Models\User;
 use Illuminate\Support\Carbon;
 use Firebase\JWT\JWT;
 use Aleksa\Library\Exceptions\TokenException;
+use Aleksa\Library\Services\Translator;
 
 class TokenManager
 {
@@ -19,9 +20,9 @@ class TokenManager
 
             return $token;
         } catch (\Firebase\JWT\ExpiredException $e) {
-            throw new TokenException('Your token has expired. Please authenticate.');
+            throw new TokenException(Translator::get('exceptions.token.expired'));
         } catch (\Exception $e) {
-            throw new TokenException('Invalid access token. Please authenticate.');
+            throw new TokenException(Translator::get('exceptions.token.invalid'));
         }
     }
 
@@ -31,7 +32,7 @@ class TokenManager
 
         foreach ($toValidate as $item) {
             if (!isset($token[$item])) {
-                throw new TokenException('Invalid access token. Please authenticate.');
+                throw new TokenException(Translator::get('exceptions.token.invalid'));
             }
         }
     }

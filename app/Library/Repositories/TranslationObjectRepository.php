@@ -7,6 +7,7 @@ use Aleksa\Library\Services\LocaleService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Aleksa\Library\Exceptions\ItemNotFoundException;
+use Aleksa\Library\Services\Translator;
 
 class TranslationObjectRepository extends ObjectRepository
 {
@@ -53,22 +54,22 @@ class TranslationObjectRepository extends ObjectRepository
         $translationData['locale_id'] = $translationData['locale_id'] ?: LocaleService::get()->id;
         $translationData[$this->translationForeignKey] = $item[$this->parentPrimaryKey];
 
-        if (($existing = $this->getTranslation($item->id, $translationData['locale_id'])->first())) {
+        if (($existing = $this->getTranslation($item->id, $translationData['locale_id'], false)->first())) {
             $translationData['id'] = $existing->id;
         }
 
         $this->translationRepository->save($translationData);
     }
 
-    public function getTranslation($itemId, $localeId = null): Builder
+    public function getTranslation($itemId, $localeId = null, $throw = true): Builder
     {
         $localeId = $localeId ?: LocaleService::get()->id;
 
         $translation = $this->getTranslations($itemId)
             ->where('locale_id', '=', $localeId);
 
-        if (!$translation->first()) {
-            throw new ItemNotFoundException('Translation not found.');
+        if (!$translation->first() && $throw) {
+            throw new ItemNotFoundException(Translator::get('exceptions.translation.not_found'));
         }
 
         return $translation;
@@ -80,7 +81,7 @@ class TranslationObjectRepository extends ObjectRepository
             ->where($this->translationTableName . '.id', '=', $translationId)->first();
 
         if (!$translation) {
-            throw new ItemNotFoundException('Translation not found.');
+            throw new ItemNotFoundException(Translator::get('exceptions.translation.not_found'));
         }
 
         return $translation;
