@@ -27,6 +27,7 @@ class TokenAuthService implements AuthService
         $this->tokenManager = $tokenManager;
         $this->passwordHandler = $passwordHandler;
         $this->userRepository = $userRepository;
+        $this->throwAuthException = true;
     }
 
     public function authenticateRequest(Request $request)
