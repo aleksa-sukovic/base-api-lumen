@@ -3,7 +3,7 @@
 $app = app();
 
 $app->router->group(
-    ['prefix' => 'v1', 'middleware' => 'auth'],
+    ['prefix' => 'v1', 'middleware' => 'auth:true'],
     function () use ($app) {
         $app->router->get('/users', 'Aleksa\User\Controllers\UserController@index');
         $app->router->get('/users/{id:[0-9]+}', 'Aleksa\User\Controllers\UserController@show');

@@ -3,7 +3,7 @@
 namespace Aleksa\Library\Exceptions;
 
 use Aleksa\Library\Exceptions\BaseException;
-use Illuminate\Http\JsonResponse;
+use Aleksa\Library\Services\Translator;
 
 class ValidationException extends BaseException
 {
@@ -12,15 +12,15 @@ class ValidationException extends BaseException
     public function __construct($errors)
     {
         $this->errors = $errors;
-        parent::__construct(400, 'Validation exception');
+        parent::__construct(400, Translator::get('exceptions.validation'));
     }
 
     public function toArray()
     {
         $array = [
-            'message' => $this->getMessage(),
+            'message'     => $this->getMessage(),
             'status_code' => $this->getStatusCode(),
-            'errors' => $this->errors
+            'errors'      => $this->errors
         ];
 
         return $array;

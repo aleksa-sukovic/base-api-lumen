@@ -12,12 +12,12 @@ class AuthFacadeService
      */
     protected $user;
 
-    public function setUser(User $user)
+    public function setUser(?User $user)
     {
         $this->user = $user;
     }
 
-    public function getUser(): User
+    public function getUser()
     {
         return $this->user;
     }

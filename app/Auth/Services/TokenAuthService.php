@@ -11,6 +11,7 @@ use Aleksa\Library\Exceptions\TokenException;
 use Aleksa\Library\Exceptions\AuthException;
 use Illuminate\Support\Carbon;
 use Aleksa\Auth\Handlers\TokenPasswordHandler;
+use Aleksa\Library\Services\Translator;
 
 class TokenAuthService implements AuthService
 {
@@ -19,6 +20,7 @@ class TokenAuthService implements AuthService
     protected $userRepository;
     protected $token;
     protected $user;
+    protected $throwAuthException;
 
     public function __construct(TokenManager $tokenManager, TokenPasswordHandler $passwordHandler, UserRepository $userRepository)
     {
@@ -71,19 +73,31 @@ class TokenAuthService implements AuthService
         return [];
     }
 
+    public function shouldThrowAuthException(): bool
+    {
+        return $this->throwAuthException;
+    }
+
+    public function setShouldThrowAuthException(bool $throw): void
+    {
+        $this->throwAuthException = $throw;
+    }
+
     protected function validateRequest(Request $request)
     {
         $token = $request->header('al-access-token');
 
-        if (!$token) {
-            throw new AuthException('You must provide access token.');
+        if (!$token && $this->shouldThrowAuthException()) {
+            throw new AuthException(Translator::get('exceptions.token.required'));
+        } elseif (!$token) {
+            return;
         }
 
         $this->token = $this->tokenManager->decode($token);
         $this->user = $this->userRepository->findById($this->token['id']);
 
         if ($this->tokenManager->isTokenRevoked($this->token, $this->user)) {
-            throw new TokenException('Invalid Token. Please authenticate.');
+            throw new TokenException(Translator::get('exceptions.token.required'));
         }
     }
 }
