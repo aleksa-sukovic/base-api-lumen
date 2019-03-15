@@ -7,12 +7,13 @@ use Aleksa\User\Database\Factories\UserModelFactory;
 use Illuminate\Support\Facades\Gate;
 use Aleksa\User\Models\User;
 use Aleksa\User\Policies\UserPolicy;
+use Aleksa\User\Events\UserEventServiceProvider;
 
 class UserServiceProvider extends ServiceProvider
 {
     public function register()
     {
-        //
+        $this->app->register(UserEventServiceProvider::class);
     }
 
     public function boot()
