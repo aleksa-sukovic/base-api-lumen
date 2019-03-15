@@ -54,8 +54,8 @@ class ObjectRepository implements Repository
         }
         $this->afterSave($item, $params);
 
-        $this->throwEvent($this->createEvent);
-        $this->throwEvent($this->saveEvent);
+        $this->throwEvent($this->createEvent, $item);
+        $this->throwEvent($this->saveEvent, $item);
 
         return $item;
     }
@@ -87,7 +87,7 @@ class ObjectRepository implements Repository
             throw new ItemNotUpdatedException;
         }
 
-        $this->throwEvent($this->saveEvent);
+        $this->throwEvent($this->saveEvent, $item);
 
         return $item;
     }
@@ -98,7 +98,7 @@ class ObjectRepository implements Repository
 
         $item->delete();
 
-        $this->throwEvent($this->deleteEvent);
+        $this->throwEvent($this->deleteEvent, $item);
 
         return $item;
     }
@@ -130,10 +130,10 @@ class ObjectRepository implements Repository
         return $params;
     }
 
-    protected function throwEvent($eventClass): void
+    protected function throwEvent($eventClass, $object): void
     {
         if ($eventClass) {
-            event(new $eventClass);
+            event(new $eventClass($object));
         }
     }
 
