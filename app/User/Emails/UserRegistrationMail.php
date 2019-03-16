@@ -5,6 +5,7 @@ namespace Aleksa\User\Emails;
 use Illuminate\Mail\Mailable;
 use Illuminate\Database\Eloquent\Model;
 use Aleksa\Library\Services\LocaleService;
+use Aleksa\Library\Services\Translator;
 
 class UserRegistrationMail extends Mailable
 {
@@ -22,6 +23,7 @@ class UserRegistrationMail extends Mailable
     public function build()
     {
         return $this->view('emails.auth.welcome_' . LocaleService::get()->code)
+            ->subject(Translator::get('emails.registration'))
             ->with('user', $this->user)
             ->to($this->user->email);
     }
