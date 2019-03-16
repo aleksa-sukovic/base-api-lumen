@@ -14,7 +14,7 @@ class UserEventServiceProvider extends EventServiceProvider
     protected $listen = [
 
         'Aleksa\User\Events\UserCreated' => [
-            'Aleksa\User\Listeners\SendRegistrationMailListener',
+            'Aleksa\User\Listeners\UserCreatedListener',
         ]
 
     ];
