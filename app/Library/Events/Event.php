@@ -17,7 +17,7 @@ abstract class Event
         $this->model = $model;
     }
 
-    public function getObject()
+    public function getObject(): Model
     {
         return $this->model;
     }
