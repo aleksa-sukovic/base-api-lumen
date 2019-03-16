@@ -2,15 +2,13 @@
 
 require_once __DIR__.'/../vendor/autoload.php';
 
-(new Laravel\Lumen\Bootstrap\LoadEnvironmentVariables(
-    dirname(__DIR__)
-))->bootstrap();
+Dotenv\Dotenv::create(dirname(__DIR__))->safeLoad();
 
 /**
  * Creating Application
  */
 $app = new Laravel\Lumen\Application(
-    realpath(__DIR__.'/../')
+    dirname(__DIR__)
 );
 
 $app->withFacades();
@@ -48,11 +46,22 @@ $app->routeMiddleware([
 ]);
 
 /**
+ * Extern ServiceProviders
+ */
+$app->register(Illuminate\Mail\MailServiceProvider::class);
+
+/**
  * Custom ServiceProviders
  */
 $app->register(Aleksa\Locale\LocaleServiceProvider::class);
 $app->register(Aleksa\User\UserServiceProvider::class);
 $app->register(Aleksa\Auth\AuthServiceProvider::class);
 $app->register(Aleksa\UserGroup\UserGroupServiceProvider::class);
+
+/**
+ * Configuration
+ */
+$app->configure('services');
+$app->configure('mail');
 
 return $app;
