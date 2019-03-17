@@ -114,7 +114,7 @@ class TranslationObjectRepository extends ObjectRepository
 
         if (!$this->getTranslations($itemId)->get()->count()) {
             $this->model->where($this->parentPrimaryKey, '=', $itemId)->delete();
-            $this->throwEvent($this->deleteEvent);
+            $this->throwEvent($this->deleteEvent, $translation);
         }
 
         return $translation;
