@@ -4,6 +4,7 @@ namespace Tests\Unit\User\Repositories;
 
 use Tests\TestCase;
 use Tests\Helpers\Traits\EnvironmentSeeds;
+use Aleksa\User\Models\User;
 
 class UserRepositoryTest extends TestCase
 {
@@ -38,5 +39,15 @@ class UserRepositoryTest extends TestCase
         $processed = $this->repository->processParams(['group_id' => 2]);
 
         $this->assertArrayHasKey('group_id', $processed);
+    }
+
+    public function test_duplicate_emails_throws_exception()
+    {
+        $this->actAsAdmin();
+        factory(User::class)->create(['email' => 'test@mail.com']);
+
+        $this->expectException('Aleksa\Library\Exceptions\ValidationException');
+
+        $this->repository->create(['email' => 'test@mail.com', 'full_name' => 'John Doe']);
     }
 }

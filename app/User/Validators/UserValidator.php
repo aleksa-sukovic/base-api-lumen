@@ -8,13 +8,13 @@ class UserValidator extends BaseValidator
 {
     protected $rules = [
         'full_name'    => 'required',
-        'email'        => 'required|email',
+        'email'        => 'required|email|unique:users,email',
         'birth_date'   => 'date',
-        'gender'       => 'required|alpha'
+        'gender'       => 'alpha'
     ];
 
     protected $updateRules = [
-        'email'      => 'email',
+        'email'      => 'email|unique:users,email,{id}',
         'birth_date' => 'date',
         'gender'     => 'alpha'
     ];
