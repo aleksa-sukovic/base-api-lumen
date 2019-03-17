@@ -14,6 +14,6 @@ interface Repository
     public function update(int $id, array $params): Model;
     public function delete(int $id): Model;
     public function findById(int $id, bool $throw = true): Model;
-    public function beforeSave(array $params);
+    public function beforeSave(array $params, ?Model $item);
     public function afterSave(Model $item, array $params);
 }

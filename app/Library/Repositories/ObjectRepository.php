@@ -47,7 +47,7 @@ class ObjectRepository implements Repository
         $modelClass = get_class($this->model);
         $item = new $modelClass($params);
 
-        $this->beforeSave($params);
+        $this->beforeSave($params, null);
         $item->save();
         if (!$item) {
             throw new ItemNotSavedException;
@@ -79,7 +79,7 @@ class ObjectRepository implements Repository
 
         $item = $this->findById($id);
 
-        $this->beforeSave($params);
+        $this->beforeSave($params, $item);
         $result = $item->update($params);
         $this->afterSave($item, $params);
 
@@ -115,7 +115,7 @@ class ObjectRepository implements Repository
         return $item;
     }
 
-    public function beforeSave(array $params)
+    public function beforeSave(array $params, ?Model $model)
     {
         //
     }
