@@ -130,7 +130,7 @@ class ObjectRepository implements Repository
         return $params;
     }
 
-    protected function throwEvent($eventClass, $object): void
+    protected function throwEvent($eventClass, $object = null): void
     {
         if ($eventClass) {
             event(new $eventClass($object));

@@ -12,12 +12,12 @@ abstract class Event
      */
     protected $model;
 
-    public function __construct(Model $model)
+    public function __construct(?Model $model)
     {
         $this->model = $model;
     }
 
-    public function getObject(): Model
+    public function getObject()
     {
         return $this->model;
     }

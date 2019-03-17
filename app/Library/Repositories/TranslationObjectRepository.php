@@ -59,6 +59,7 @@ class TranslationObjectRepository extends ObjectRepository
         }
 
         $this->translationRepository->save($translationData);
+        $this->throwEvent($this->saveEvent, $item);
     }
 
     public function getTranslation($itemId, $localeId = null, $throw = true): Builder
@@ -117,6 +118,7 @@ class TranslationObjectRepository extends ObjectRepository
             $this->throwEvent($this->deleteEvent, $translation);
         }
 
+        $this->throwEvent($this->saveEvent);
         return $translation;
     }
 
