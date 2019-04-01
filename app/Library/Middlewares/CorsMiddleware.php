@@ -17,7 +17,11 @@ class CorsMiddleware
             return new JsonResponse([], 403);
         }
 
-        $response = $next($request);
+        if ($request->isMethod('OPTIONS')) {
+            $response = new JsonResponse([], 200);
+        } else {
+            $response = $next($request);
+        }
 
         return $handler->modifyResponse($response);
     }
