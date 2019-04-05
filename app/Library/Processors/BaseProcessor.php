@@ -8,5 +8,5 @@ abstract class BaseProcessor
 {
     protected $processableParams;
 
-    abstract public function process(Builder $query, $params): Builder;
+    abstract public function process(Builder $query, $params, $tableName = ''): Builder;
 }

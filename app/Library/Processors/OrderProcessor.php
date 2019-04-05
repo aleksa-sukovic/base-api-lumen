@@ -10,12 +10,12 @@ class OrderProcessor extends BaseProcessor
     protected $order;
     protected $orderBy;
 
-    public function process(Builder $query, $params): Builder
+    public function process(Builder $query, $params, $tableName = ''): Builder
     {
         $this->processParams($params);
 
         if ($this->orderBy && $this->order) {
-            $query->orderBy($this->orderBy, $this->order);
+            $query->orderBy($tableName . '.' . $this->orderBy, $this->order);
         }
 
         return $query;

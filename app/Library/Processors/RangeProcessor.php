@@ -8,9 +8,9 @@ use Aleksa\Library\Processors\BaseProcessor;
 class RangeProcessor extends BaseProcessor
 {
     protected $fromPrefix = 'from';
-    protected $toPrefix   = 'to';
+    protected $toPrefix = 'to';
 
-    public function process(Builder $query, $params): Builder
+    public function process(Builder $query, $params, $tableName = ''): Builder
     {
         $rangeParams = [];
 
@@ -58,15 +58,15 @@ class RangeProcessor extends BaseProcessor
         return false;
     }
 
-    private function processRanges(Builder $query, $params)
+    private function processRanges(Builder $query, $params, $tableName = '')
     {
         foreach ($params as $param => $values) {
             if (isset($values['from']) && isset($values['to'])) {
-                $query->whereBetween($param, [ $values['from'], $values['to'] ]);
+                $query->whereBetween($tableName . '.' . $param, [ $values['from'], $values['to'] ]);
             } elseif (isset($values['from'])) {
-                $query->where($param, '>=', $values['from']);
+                $query->where($tableName . '.' . $param, '>=', $values['from']);
             } elseif (isset($values['to'])) {
-                $query->where($param, '<=', $values['to']);
+                $query->where($tableName . '.' . $param, '<=', $values['to']);
             }
         }
 

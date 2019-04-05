@@ -6,6 +6,8 @@ use Aleksa\Library\Processors\QueryProcessor;
 
 class UserQueryProcessor extends QueryProcessor
 {
+    protected $tableName = 'users';
+
     protected $processors = [
         'Aleksa\User\Processors\UserFilterProcessor',
         'Aleksa\User\Processors\UserSearchProcessor',

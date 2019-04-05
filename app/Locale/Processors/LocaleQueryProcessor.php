@@ -6,6 +6,7 @@ use Aleksa\Library\Processors\TranslationQueryProcessor;
 
 class LocaleQueryProcessor extends TranslationQueryProcessor
 {
+    protected $tableName = 'locales';
     protected $translationTableName = 'locale_translations';
 
     protected $processors = [

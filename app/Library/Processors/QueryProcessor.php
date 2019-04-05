@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 class QueryProcessor
 {
+    protected $tableName;
     protected $processors;
 
     public function __construct()
@@ -18,10 +19,9 @@ class QueryProcessor
     public function process(Builder $query, $params)
     {
         foreach ($this->processors as $processor) {
-            $query = $processor->process($query, $params);
+            $query = $processor->process($query, $params, $this->tableName);
         }
 
         return $query;
     }
-
 }

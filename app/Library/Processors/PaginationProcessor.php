@@ -8,9 +8,9 @@ use Aleksa\Library\Processors\BaseProcessor;
 class PaginationProcessor extends BaseProcessor
 {
     protected $offset = 0;
-    protected $limit  = 10;
+    protected $limit = 10;
 
-    public function process(Builder $query, $params): Builder
+    public function process(Builder $query, $params, $tableName = ''): Builder
     {
         if (isset($params['limit'])) {
             $this->limit = $params['limit'];

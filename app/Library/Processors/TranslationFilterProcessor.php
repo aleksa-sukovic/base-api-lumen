@@ -4,16 +4,16 @@ namespace Aleksa\Library\Processors;
 
 use Illuminate\Database\Eloquent\Builder;
 
-class TranslationFilterProcessor extends TranslationBaseProcessor
+class TranslationFilterProcessor extends BaseProcessor
 {
-    public function process(Builder $query, $params, $translationTableName = ''): Builder
+    public function process(Builder $query, $params, $tableName = ''): Builder
     {
         foreach ($params as $key => $value) {
             if (!in_array($key, $this->processableParams)) {
                 continue;
             }
 
-            $query->where($translationTableName . '.' . $key, '=', $value);
+            $query->where($tableName . '.' . $key, '=', $value);
         }
 
         return $query;
