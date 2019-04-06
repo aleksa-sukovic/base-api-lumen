@@ -16,6 +16,6 @@ class LocaleQueryProcessor extends TranslationQueryProcessor
     ];
 
     protected $translationProcessors = [
-        //
+        'Aleksa\Locale\Processors\LocaleTranslationOrderProcessor'
     ];
 }
