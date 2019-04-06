@@ -14,9 +14,10 @@ class ObjectController extends BaseController
         $this->authorizeAction('index', get_class($this->repository->getModel()));
 
         $params = $this->request->all();
-
         $items = $this->repository->all($params);
-        return $this->respondCollection($items, 200);
+        $additionalFields = $this->parseAdditionalFields($params);
+
+        return $this->respondCollection($items, 200, 'Success', $additionalFields);
     }
 
     public function show($id)
@@ -65,5 +66,21 @@ class ObjectController extends BaseController
         if (Auth::getUser()) {
             $this->authorizeForUser(Auth::getUser(), $method, $item);
         }
+    }
+
+    protected function parseAdditionalFields(array $params): array
+    {
+        if (!isset($params['additional_fields'])) {
+            return [];
+        }
+
+        $additionalFields = [];
+        $data = explode(',', $params['additional_fields']);
+
+        if (in_array('count', $data)) {
+            $additionalFields['count'] = $this->repository->count($params);
+        }
+
+        return $additionalFields;
     }
 }

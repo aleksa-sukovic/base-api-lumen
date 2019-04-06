@@ -29,6 +29,15 @@ class ObjectRepository implements Repository
         return $items;
     }
 
+    public function count(array $params): int
+    {
+        $params = $this->processParams($params);
+
+        $query = $this->queryProcessor->process($this->model->newQuery(), $params, true);
+
+        return $query->count();
+    }
+
     public function save(array $params): Model
     {
         if (isset($params['id'])) {
