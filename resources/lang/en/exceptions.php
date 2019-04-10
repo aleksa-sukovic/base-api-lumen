@@ -15,5 +15,6 @@ return [
     'token.expired'                   => 'Your token has expired. Please authenticate.',
     'token.invalid'                   => 'Invalid access token. Please authenticate.',
     'token.required'                  => 'You must provide access token.',
-    'translation.not_found'           => 'Translation not found.'
+    'translation.not_found'           => 'Translation not found.',
+    'validation'                      => 'Validation Exception'
 ];

@@ -51,7 +51,7 @@ class TranslationObjectRepository extends ObjectRepository
 
     protected function saveTranslation(Model $item, $translationData = [])
     {
-        $translationData['locale_id'] = $translationData['locale_id'] ?: LocaleService::get()->id;
+        $translationData['locale_id'] = $translationData['locale_id'] ?? LocaleService::get()->id;
         $translationData[$this->translationForeignKey] = $item[$this->parentPrimaryKey];
 
         if (($existing = $this->getTranslation($item->id, $translationData['locale_id'], false)->first())) {
@@ -64,7 +64,7 @@ class TranslationObjectRepository extends ObjectRepository
 
     public function getTranslation($itemId, $localeId = null, $throw = true): Builder
     {
-        $localeId = $localeId ?: LocaleService::get()->id;
+        $localeId = $localeId ?? LocaleService::get()->id;
 
         $translation = $this->getTranslations($itemId)
             ->where('locale_id', '=', $localeId);

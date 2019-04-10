@@ -12,7 +12,7 @@ class ValidationException extends BaseException
     public function __construct($errors)
     {
         $this->errors = $errors;
-        parent::__construct(400, Translator::get('exceptions.validation'));
+        parent::__construct(400, '');
     }
 
     public function toArray()

@@ -10,6 +10,7 @@
         "gmail",
         "laravel",
         "middlewares",
+        "missmatch",
         "optimize",
         "params",
         "phpdotenv",
