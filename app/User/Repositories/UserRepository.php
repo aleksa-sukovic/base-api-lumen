@@ -23,9 +23,20 @@ class UserRepository extends ObjectRepository
         $this->queryProcessor = $queryProcessor;
     }
 
-    public function findByEmail(string $email = '', $throw = true): User
+    public function findByEmail(string $email = '', $throw = true): ?User
     {
         $user = $this->model->where('email', $email)->first();
+
+        if (!$user && $throw) {
+            throw new ItemNotFoundException;
+        }
+
+        return $user;
+    }
+
+    public function findByCode(string $code = '', bool $throw = true): ?User
+    {
+        $user = $this->model->where('activation_code', $code)->first();
 
         if (!$user && $throw) {
             throw new ItemNotFoundException;

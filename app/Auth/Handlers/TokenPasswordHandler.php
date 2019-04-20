@@ -30,6 +30,23 @@ class TokenPasswordHandler
         return $user;
     }
 
+    public function initializePassword(Request $request, User $user)
+    {
+        $params = $request->all();
+
+        $validator = Validator::make($params, [
+            'password'              => 'required',
+            'password_confirmation' => 'required|same:password',
+        ]);
+
+        if ($validator->fails()) {
+            throw new ValidationException($validator->errors());
+        }
+
+        $user->password = Hash::make($params['password']);
+        $user->save();
+    }
+
     public function resetPassword(Request $request, User $user)
     {
         $params = $request->all();

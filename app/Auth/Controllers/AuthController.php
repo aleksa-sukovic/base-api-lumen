@@ -61,6 +61,15 @@ class AuthController extends BaseController
         return $this->respond($data, 200, 'Success');
     }
 
+    public function activate($code, Request $request)
+    {
+        $user = users()->findByCode($code);
+
+        $data = $this->authService->activateUser($user, $request);
+
+        return $this->respond($data, 200, 'Success');
+    }
+
     private function getUserData()
     {
         $user = Auth::getUser();

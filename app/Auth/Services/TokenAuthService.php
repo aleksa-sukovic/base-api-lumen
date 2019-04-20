@@ -12,6 +12,7 @@ use Aleksa\Library\Exceptions\AuthException;
 use Illuminate\Support\Carbon;
 use Aleksa\Auth\Handlers\TokenPasswordHandler;
 use Aleksa\Library\Services\Translator;
+use Aleksa\User\Models\User;
 
 class TokenAuthService implements AuthService
 {
@@ -70,6 +71,17 @@ class TokenAuthService implements AuthService
         $this->validateRequest($request);
 
         $this->passwordHandler->resetPassword($request, $this->user);
+
+        return [];
+    }
+
+    public function activateUser(User $user, Request $request)
+    {
+        $this->passwordHandler->initializePassword($request, $user);
+
+        $user->activated = true;
+        $user->activation_code = '';
+        $user->save();
 
         return [];
     }

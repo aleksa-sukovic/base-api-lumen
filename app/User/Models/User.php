@@ -40,4 +40,9 @@ class User extends Model
     {
         return $this->group->name === 'user';
     }
+
+    public function isActivated()
+    {
+        return $this->activated;
+    }
 }
