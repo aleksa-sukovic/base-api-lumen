@@ -94,11 +94,17 @@ class TokenAuthService implements AuthService
             return;
         }
 
-        $this->token = $this->tokenManager->decode($token);
-        $this->user = $this->userRepository->findById($this->token['id']);
+        try {
+            $this->token = $this->tokenManager->decode($token);
+            $this->user = $this->userRepository->findById($this->token['id']);
 
-        if ($this->tokenManager->isTokenRevoked($this->token, $this->user)) {
-            throw new TokenException(Translator::get('exceptions.token.required'));
+            if ($this->tokenManager->isTokenRevoked($this->token, $this->user)) {
+                throw new TokenException(Translator::get('exceptions.token.required'));
+            }
+        } catch (TokenException $e) {
+            if ($this->shouldThrowAuthException()) {
+                throw $e;
+            }
         }
     }
 }

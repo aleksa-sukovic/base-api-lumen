@@ -7,7 +7,7 @@ use Laravel\Lumen\Http\Request;
 
 class Authenticate
 {
-    public function handle(Request $request, Closure $next, $throwException)
+    public function handle(Request $request, Closure $next, $throwException = 'true')
     {
         $throwException = $throwException === 'false' ? false : true;
 
