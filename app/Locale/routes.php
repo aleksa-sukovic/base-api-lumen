@@ -16,7 +16,7 @@ $app->router->group(
 );
 
 $app->router->group(
-    ['prefix' => 'v1', 'middleware' => 'auth:true'],
+    ['prefix' => 'v1', 'middleware' => 'auth:false'],
     function () use ($app) {
         $app->router->get('/locales', 'Aleksa\Locale\Controllers\LocaleController@index');
     }
