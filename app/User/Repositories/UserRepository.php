@@ -8,6 +8,7 @@ use Aleksa\Library\Repositories\ObjectRepository;
 use Aleksa\User\Processors\UserQueryProcessor;
 use Aleksa\Library\Exceptions\ItemNotFoundException;
 use Aleksa\Library\Facades\Auth;
+use Illuminate\Database\Eloquent\Model;
 
 class UserRepository extends ObjectRepository
 {
@@ -41,5 +42,14 @@ class UserRepository extends ObjectRepository
         }
 
         return $params;
+    }
+
+    public function afterSave(Model $item, array $params)
+    {
+        // setting activation code for new users
+        if (!isset($params['id'])) {
+            $item->activation_code = str_random(5);
+            $item->save();
+        }
     }
 }

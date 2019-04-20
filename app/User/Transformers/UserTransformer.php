@@ -19,6 +19,7 @@ class UserTransformer extends TransformerAbstract
             'email'      => (string)$user->email,
             'gender'     => (string)$user->gender,
             'group_id'   => (int)$user->group_id,
+            'activated'  => (bool)$user->activated,
             'birth_date' => (string)$user->birth_date
         ];
     }

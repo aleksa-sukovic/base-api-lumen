@@ -98,13 +98,18 @@
             <tr class="row-info" style="background-color: rgb(248, 248, 248);text-align: center;">
                 <td colspan="2" style="padding: 1.4rem 1rem 0 1rem;">
                     <p style="margin: 0 0 1rem 0;">
-                        Your account has been successfully created. Click the link below to access the dashboard.
+                        Your account has been successfully created. Click the link below to activate it.
                     </p>
                 </td>
             </tr>
             <tr>
                 <td colspan="2" style="text-align: center;padding: 1.4rem 1rem 0 1rem;">
-                    <a href="#" class="button" style="display: inline-block;padding: 1rem 2rem;background-color: #336B87;text-decoration: none;margin-bottom: 1.4rem;margin-top: 0.1rem;color: white;font-weight: bold;border-radius: 8px;">Visit Dashboard</a>
+                    <a
+                        href="{{ env('ADMIN_URL') . '/auth/' . $user->activation_code . '/activate' }}"
+                        class="button"
+                        style="display: inline-block;padding: 1rem 2rem;background-color: #336B87;text-decoration: none;margin-bottom: 1.4rem;margin-top: 0.1rem;color: white;font-weight: bold;border-radius: 8px;">
+                        Activate account
+                    </a>
                 </td>
             </tr>
             <tr>
