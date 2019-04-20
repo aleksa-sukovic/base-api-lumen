@@ -13,13 +13,14 @@ class ItemNotFoundException extends BaseException
             $message = Translator::get('exceptions.item.not_found');
         }
 
-        parent::__construct(404, $message);
+        parent::__construct(404, $message, 'ItemNotFound');
     }
 
     public function toArray()
     {
         return [
             'status_code' => $this->getStatusCode(),
+            'code'        => $this->getExceptionCode(),
             'message'     => $this->getMessage(),
             'data'        => []
         ];

@@ -8,11 +8,14 @@ class BaseException extends Exception
 {
     protected $statusCode;
     protected $withTrace;
+    protected $exceptionCode;
 
-    public function __construct($statusCode = 500, $message = '', $withTrace = true)
+    public function __construct($statusCode = 500, $message = '', $exceptionCode = null, $withTrace = true)
     {
         $this->statusCode = $statusCode;
         $this->withTrace = $withTrace;
+        $this->exceptionCode = $exceptionCode;
+
         parent::__construct($message);
     }
 
@@ -34,6 +37,7 @@ class BaseException extends Exception
     {
         $data = [
             'status_code' => $this->getStatusCode(),
+            'code'        => $this->getExceptionCode(),
             'message'     => $this->getMessage(),
             'class'       => get_class($this),
             'line'        => $this->getLine(),
@@ -50,6 +54,7 @@ class BaseException extends Exception
     {
         return [
             'status_code' => $this->getStatusCode(),
+            'code'        => $this->getExceptionCode(),
             'message'     => $this->message
         ];
     }
@@ -59,9 +64,19 @@ class BaseException extends Exception
         return $this->statusCode;
     }
 
+    public function getExceptionCode()
+    {
+        return $this->exceptionCode;
+    }
+
     public function setStatusCode($statusCode)
     {
         $this->statusCode = $statusCode;
+    }
+
+    public function setExceptionCode($exceptionCode)
+    {
+        $this->exceptionCode = $exceptionCode;
     }
 
     public function withTrace($value)

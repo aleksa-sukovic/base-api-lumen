@@ -14,13 +14,14 @@ class MethodNotAllowedException extends BaseException
             $message = Translator::get('exceptions.method.not_allowed');
         }
 
-        parent::__construct(405, $message);
+        parent::__construct(405, $message, 'MethodNotAllowed');
     }
 
     public function toArray()
     {
         return  [
             'status_code' => $this->getStatusCode(),
+            'code'        => $this->getExceptionCode(),
             'message'     => $this->getMessage(),
             'data'        => []
         ];

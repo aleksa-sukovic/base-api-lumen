@@ -13,13 +13,14 @@ class AuthException extends BaseException
             $message = Translator::get('exceptions.auth.default');
         }
 
-        parent::__construct(400, $message);
+        parent::__construct(400, $message, 'AuthException');
     }
 
     public function toArray()
     {
         return [
             'status_code' => $this->getStatusCode(),
+            'code'        => $this->getExceptionCode(),
             'message'     => $this->getMessage(),
             'data'        => []
         ];

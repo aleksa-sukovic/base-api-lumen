@@ -13,13 +13,14 @@ class UnauthorizedException extends BaseException
             $message = Translator::get('exceptions.unauthorized');
         }
 
-        parent::__construct(403, $message);
+        parent::__construct(403, $message, 'UnauthorizedException');
     }
 
     public function toArray()
     {
         return [
             'status_code' => $this->getStatusCode(),
+            'code'        => $this->getExceptionCode(),
             'message'     => $this->getMessage(),
             'data'        => []
         ];

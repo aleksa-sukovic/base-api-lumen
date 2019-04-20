@@ -13,13 +13,14 @@ class RouteNotFoundException extends BaseException
             $message = Translator::get('exceptions.route.not_found');
         }
 
-        parent::__construct(404, $message);
+        parent::__construct(404, $message, 'RouteNotFound');
     }
 
     public function toArray()
     {
         return [
             'status_code' => $this->getStatusCode(),
+            'code'        => $this->getExceptionCode(),
             'message'     => $this->getMessage(),
             'data'        => []
         ];

@@ -13,13 +13,14 @@ class TokenException extends BaseException
             $message = Translator::get('exceptions.token.default');
         }
 
-        parent::__construct($statusCode, $message);
+        parent::__construct($statusCode, $message, 'TokenException');
     }
 
     public function toArray()
     {
         return [
             'status_code' => $this->getStatusCode(),
+            'code'        => $this->getExceptionCode(),
             'message'     => $this->getMessage(),
             'data'        => []
         ];
