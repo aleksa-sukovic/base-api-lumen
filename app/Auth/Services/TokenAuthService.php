@@ -80,7 +80,7 @@ class TokenAuthService implements AuthService
         $this->passwordHandler->initializePassword($request, $user);
 
         $user->activated = true;
-        $user->activation_code = '';
+        $user->activation_code = null;
         $user->save();
 
         return [];
@@ -112,6 +112,10 @@ class TokenAuthService implements AuthService
 
             if ($this->tokenManager->isTokenRevoked($this->token, $this->user)) {
                 throw new TokenException(Translator::get('exceptions.token.required'));
+            }
+
+            if (!$this->user->isActivated() ) {
+                throw new TokenException(Translator::get('exceptions.auth.not_activated'));
             }
         } catch (TokenException $e) {
             if ($this->shouldThrowAuthException()) {
