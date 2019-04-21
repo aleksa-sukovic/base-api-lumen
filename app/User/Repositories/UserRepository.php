@@ -58,9 +58,10 @@ class UserRepository extends ObjectRepository
     public function afterSave(Model $item, array $params)
     {
         // setting activation code for new users
-        if (!isset($params['id'])) {
+        if (!isset($params['id']) || $params['id'] == 0) {
             $item->activation_code = str_random(5);
             $item->save();
+            $item->refresh();
         }
     }
 }

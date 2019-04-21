@@ -98,7 +98,7 @@
             <tr class="row-info" style="background-color: rgb(248, 248, 248);text-align: center;">
                 <td colspan="2" style="padding: 1.4rem 1rem 0 1rem;">
                     <p style="margin: 0 0 1rem 0;">
-                        Vaš nalog je uspješno kreiran. Kliknite ispod da biste pristupili aplikaciji.
+                        Vaš nalog je uspješno kreiran. Kliknite ispod da ga aktivirate.
                     </p>
                 </td>
             </tr>
