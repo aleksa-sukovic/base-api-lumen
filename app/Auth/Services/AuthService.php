@@ -12,8 +12,9 @@ interface AuthService
     public function authenticateUser(Request $request);
     public function refreshAuthentication(Request $request);
     public function revokeAuthentication(Request $request);
-    public function resetCredentials(Request $request);
-    public function activateUser(User $user, Request $request);
+    public function requestCredentialsReset(Request $request, User $user);
+    public function resetCredentials(Request $request, User $user);
+    public function activateUser(Request $request, User $user);
     public function shouldThrowAuthException(): bool;
     public function setShouldThrowAuthException(bool $throwException): void;
 }

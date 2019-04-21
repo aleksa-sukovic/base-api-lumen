@@ -7,6 +7,8 @@ use Aleksa\Auth\Services\AuthService;
 use Aleksa\Library\Controllers\BaseController;
 use Aleksa\Library\Facades\Auth;
 use Aleksa\User\Transformers\UserTransformer;
+use Aleksa\Library\Services\Translator;
+use Aleksa\Library\Exceptions\UnauthorizedException;
 
 class AuthController extends BaseController
 {
@@ -54,9 +56,11 @@ class AuthController extends BaseController
         return $this->respond($data, 200, 'Successfully revoked all of yours access tokens.');
     }
 
-    public function reset(Request $request)
+    public function reset($code, Request $request)
     {
-        $data = $this->authService->resetCredentials($request);
+        $user = users()->findByPasswordResetCode($code);
+
+        $data = $this->authService->resetCredentials($request, $user);
 
         return $this->respond($data, 200, 'Success');
     }
@@ -65,7 +69,19 @@ class AuthController extends BaseController
     {
         $user = users()->findByCode($code);
 
-        $data = $this->authService->activateUser($user, $request);
+        $data = $this->authService->activateUser($request, $user);
+
+        return $this->respond($data, 200, 'Success');
+    }
+
+    public function requestReset(Request $request)
+    {
+        if ($request->has('user_id') && !Auth::getUser()->isSuperAdmin()) {
+            throw new UnauthorizedException;
+        }
+
+        $id = $request->has('user_id') ? $request->input('user_id') : Auth::getUser()->id;
+        $data = $this->authService->requestCredentialsReset($request, users()->findById($id));
 
         return $this->respond($data, 200, 'Success');
     }

@@ -13,6 +13,8 @@ use Illuminate\Support\Carbon;
 use Aleksa\Auth\Handlers\TokenPasswordHandler;
 use Aleksa\Library\Services\Translator;
 use Aleksa\User\Models\User;
+use Illuminate\Support\Facades\Mail;
+use Aleksa\User\Emails\UserCredentialsResetMail;
 
 class TokenAuthService implements AuthService
 {
@@ -66,16 +68,27 @@ class TokenAuthService implements AuthService
         return [];
     }
 
-    public function resetCredentials(Request $request)
+    public function requestCredentialsReset(Request $request, User $user)
     {
-        $this->validateRequest($request);
+        $user->password_reset_code = str_random(5);
+        $user->save();
 
-        $this->passwordHandler->resetPassword($request, $this->user);
+        Mail::send(new UserCredentialsResetMail($user));
 
         return [];
     }
 
-    public function activateUser(User $user, Request $request)
+    public function resetCredentials(Request $request, User $user)
+    {
+        $this->passwordHandler->resetPassword($request, $user);
+
+        $user->password_reset_code = null;
+        $user->save();
+
+        return [];
+    }
+
+    public function activateUser(Request $request, User $user)
     {
         $this->passwordHandler->initializePassword($request, $user);
 

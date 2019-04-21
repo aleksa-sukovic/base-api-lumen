@@ -47,7 +47,7 @@ class TokenPasswordHandler
         $user->save();
     }
 
-    public function resetPassword(Request $request, User $user)
+    public function changePassword(Request $request, User $user)
     {
         $params = $request->all();
 
@@ -63,6 +63,23 @@ class TokenPasswordHandler
 
         if (!Hash::check($params['old_password'], $user->password)) {
             throw new AuthException(Translator::get('exceptions.auth.password.missmatch'));
+        }
+
+        $user->password = Hash::make($params['password']);
+        $user->save();
+    }
+
+    public function resetPassword(Request $request, User $user)
+    {
+        $params = $request->all();
+
+        $validator = Validator::make($params, [
+            'password'              => 'required',
+            'password_confirmation' => 'required|same:password'
+        ]);
+
+        if ($validator->fails()) {
+            throw new ValidationException($validator->errors());
         }
 
         $user->password = Hash::make($params['password']);

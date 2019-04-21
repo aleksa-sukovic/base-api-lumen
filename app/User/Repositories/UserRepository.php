@@ -45,6 +45,17 @@ class UserRepository extends ObjectRepository
         return $user;
     }
 
+    public function findByPasswordResetCode(string $code = '', bool $throw = true): ?User
+    {
+        $user = $this->model->where('password_reset_code', $code)->first();
+
+        if (!$user && $throw) {
+            throw new ItemNotFoundException;
+        }
+
+        return $user;
+    }
+
     public function processParams($params = []): array
     {
         // Only super-admins can change groups
