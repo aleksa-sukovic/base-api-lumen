@@ -18,27 +18,27 @@ class User extends Model
 
     public function hasAdminPrivileges()
     {
-        return $this->isSuperAdmin() || $this->isAdmin();
+        return $this->group && ($this->isSuperAdmin() || $this->isAdmin());
     }
 
     public function isSuperAdmin()
     {
-        return $this->group->name === 'super-admin';
+        return $this->group && $this->group->name === 'super-admin';
     }
 
     public function isAdmin()
     {
-        return $this->group->name === 'admin';
+        return $this->group && $this->group->name === 'admin';
     }
 
     public function isEditor()
     {
-        return $this->group->name === 'editor';
+        return $this->group && $this->group->name === 'editor';
     }
 
     public function isUser()
     {
-        return $this->group->name === 'user';
+        return $this->group && $this->group->name === 'user';
     }
 
     public function isActivated()
