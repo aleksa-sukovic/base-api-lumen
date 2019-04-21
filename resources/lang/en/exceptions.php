@@ -16,5 +16,6 @@ return [
     'token.invalid'                   => 'Invalid access token. Please authenticate.',
     'token.required'                  => 'You must provide access token.',
     'translation.not_found'           => 'Translation not found.',
-    'validation'                      => 'Validation Exception'
+    'validation'                      => 'Validation Exception',
+    'auth.not_activated'              => 'Your account is not activated.'
 ];
