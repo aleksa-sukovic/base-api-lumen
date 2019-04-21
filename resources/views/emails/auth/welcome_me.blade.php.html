@@ -4,7 +4,7 @@
 <head>
     <meta name="viewport" content="width=device-width">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Welcome to {{ env('APP_NAME') }}</title>
+    <title>Dobrodošli na {{ env('APP_NAME') }}</title>
     <style>
         table {
             width: 500px;
@@ -87,9 +87,9 @@
         <thead style="background-color: #90AFC5;">
             <tr>
                 <th colspan="2">
-                    <h1 style="font-weight: 300;margin-bottom: 0.2rem;">Welcome {{ $user->full_name }}</b></h1>
+                    <h1 style="font-weight: 300;margin-bottom: 0.2rem;">Dobrodošli {{ $user->full_name }}</h1>
                     <p style="font-weight: 100;margin-top: 0.8rem;font-size: 15px;margin-bottom: 1.5rem;color: rgb(255, 255, 255);margin-left: 1.4rem;margin-right: 1.4rem;">
-                        We are hoping you will achieve your goals!
+                        Nadamo se da ćete ostvariti sve vaše ciljeve.
                     </p>
                 </th>
             </tr>
@@ -98,24 +98,24 @@
             <tr class="row-info" style="background-color: rgb(248, 248, 248);text-align: center;">
                 <td colspan="2" style="padding: 1.4rem 1rem 0 1rem;">
                     <p style="margin: 0 0 1rem 0;">
-                        Your account has been successfully created. Click the link below to activate it.
+                        Vaš nalog je uspješno kreiran. Kliknite ispod da biste pristupili aplikaciji.
                     </p>
                 </td>
             </tr>
             <tr>
                 <td colspan="2" style="text-align: center;padding: 1.4rem 1rem 0 1rem;">
                     <a
-                        href="{{ env('ADMIN_URL') . '/auth/' . $user->activation_code . '/activate' }}"
+                        href="{{ env('ADMIN_URL') . '/activate/' . $user->activation_code }}"
                         class="button"
                         style="display: inline-block;padding: 1rem 2rem;background-color: #336B87;text-decoration: none;margin-bottom: 1.4rem;margin-top: 0.1rem;color: white;font-weight: bold;border-radius: 8px;">
-                        Activate account
+                            Aktiviraj nalog
                     </a>
                 </td>
             </tr>
             <tr>
                 <td class="footer" style="padding: 1.4rem 1rem 0 1rem;padding-bottom: 1rem;background-color: rgb(248, 248, 248);">
                     <p style="text-align: center;margin: 0;">
-                        This is automated message, please do not reply. Thank you.
+                        Ovo je automatizovana poruka, molimo vas da ne odgovarate. Hvala vam.
                     </p>
                 </td>
             </tr>
