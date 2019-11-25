@@ -4,10 +4,10 @@ namespace Aleksa\Library\Controllers;
 
 use League\Fractal\Manager;
 use League\Fractal\Resource\Item;
-use App\Http\Controllers\Controller;
 use League\Fractal\Resource\Collection;
 use League\Fractal\TransformerAbstract;
 use League\Fractal\Serializer\ArraySerializer;
+use Laravel\Lumen\Routing\Controller;
 
 class BaseController extends Controller
 {
@@ -18,15 +18,31 @@ class BaseController extends Controller
 
     public function __construct()
     {
-        $this->request    = app('request');
-        $this->fractal    = new Manager();
+        $this->request = app('request');
+        $this->fractal = new Manager();
         $this->statusCode = 200;
         $this->fractal->setSerializer(new ArraySerializer);
+        $this->parseIncludes();
     }
+
+    protected function parseIncludes()
+    {
+        if (!$this->request->isMethod('get')) {
+            return;
+        }
+
+        if (!$this->request->has('include')) {
+            return;
+        }
+
+        $includes = $this->request->input('include');
+        $this->fractal->parseIncludes($includes);
+    }
+
 
     public function respondSingle($data, int $statusCode = null, string $message = 'Success', array $additionalData = [], $customTransformer = null)
     {
-        if(!$statusCode) {
+        if (!$statusCode) {
             $statusCode = $this->getStatusCode();
         }
 
@@ -41,12 +57,12 @@ class BaseController extends Controller
 
     public function respondCollection($data, int $statusCode = null, string $message = 'Success', array $additionalData = [], $customTransformer = null)
     {
-        if(!$statusCode) {
+        if (!$statusCode) {
             $statusCode = $this->getStatusCode();
         }
 
         $transformer = $this->transformer;
-        if($customTransformer) {
+        if ($customTransformer) {
             $transformer = $customTransformer;
         }
 
@@ -54,15 +70,15 @@ class BaseController extends Controller
         return $this->respond($this->fractal->createData($collection)->toArray(), $statusCode, $message, $additionalData);
     }
 
-    private function respond($data, int $statusCode, string $message = 'Success', array $additionalData = [])
+    public function respond($data, int $statusCode, string $message = 'Success', array $additionalData = [])
     {
         $responseArray = [
-            'message' => $message,
+            'message'     => $message,
             'status_code' => $statusCode,
         ];
 
         $responseArray['data'] = $data;
-        if(array_key_exists('data', $data)) {
+        if (array_key_exists('data', $data)) {
             $responseArray['data'] = $data['data'];
         }
 

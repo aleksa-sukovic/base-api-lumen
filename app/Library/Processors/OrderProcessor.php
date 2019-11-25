@@ -7,14 +7,16 @@ use Aleksa\Library\Processors\BaseProcessor;
 
 class OrderProcessor extends BaseProcessor
 {
-    protected $order   = 'asc';
-    protected $orderBy = 'id';
+    protected $order;
+    protected $orderBy;
 
-    public function process(Builder $query, $params): Builder
+    public function process(Builder $query, $params, $tableName = ''): Builder
     {
         $this->processParams($params);
 
-        $query->orderBy($this->orderBy, $this->order);
+        if ($this->orderBy && $this->order) {
+            $query->orderBy($tableName . '.' . $this->orderBy, $this->order);
+        }
 
         return $query;
     }
@@ -27,20 +29,20 @@ class OrderProcessor extends BaseProcessor
 
     private function processOrderParams($params)
     {
-        if(!isset($params['order'])) {
+        if (!isset($params['order'])) {
             return;
         }
 
         $order = strtolower($params['order']);
-        if($order == 'asc' || $order == 'desc') {
+        if ($order == 'asc' || $order == 'desc') {
             $this->order = $order;
         }
     }
 
     private function processOrderByParams($params)
     {
-        if(isset($params['order_by']) && in_array($params['order_by'], $this->processableParams)) {
-            $this->orderBy = $params['order_by'];
+        if (isset($params['orderby']) && in_array($params['orderby'], $this->processableParams)) {
+            $this->orderBy = $params['orderby'];
         }
     }
 }

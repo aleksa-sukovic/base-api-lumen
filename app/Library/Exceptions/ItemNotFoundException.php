@@ -3,19 +3,26 @@
 namespace Aleksa\Library\Exceptions;
 
 use Aleksa\Library\Exceptions\BaseException;
-use Illuminate\Http\JsonResponse;
+use Aleksa\Library\Services\Translator;
 
 class ItemNotFoundException extends BaseException
 {
-    public function __construct()
+    public function __construct($message = null)
     {
-        parent::__construct(404, 'Item not found');
+        if (!$message) {
+            $message = Translator::get('exceptions.item.not_found');
+        }
+
+        parent::__construct(404, $message, 'ItemNotFound');
     }
 
     public function toArray()
     {
-        $array         = parent::toArray();
-        $array['data'] = [];
-        return $array;
+        return [
+            'status_code' => $this->getStatusCode(),
+            'code'        => $this->getExceptionCode(),
+            'message'     => $this->getMessage(),
+            'data'        => []
+        ];
     }
 }

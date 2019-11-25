@@ -14,51 +14,83 @@ class Handler extends ExceptionHandler
 
     public function report(Exception $exception)
     {
-        if (!$this->isCustomException($exception)) {
-            parent::report($exception);
-        }
+        parent::report($exception);
     }
 
     public function render($request, Exception $exception)
     {
         if ($this->isCustomException($exception)) {
-            return $this->renderCustomException($exception);
+            return $this->renderCustomException($exception, $exception->getStatusCode());
         }
 
-        return $this->renderJson($exception);
+        return $this->renderSystemExceptions($exception);
     }
 
-    private function isCustomException($exception)
+    private function isCustomException(Exception $exception)
     {
         return get_class($exception) == 'Aleksa\Library\Exceptions\BaseException' || is_subclass_of($exception, 'Aleksa\Library\Exceptions\BaseException');
     }
 
-    private function renderCustomException($exception)
+    private function renderCustomException(Exception $exception)
     {
-        try {
-            return response()->json($exception->toArray());
-        } catch (InvalidArgumentException $e) {
-            $exception->isWithTrace(false);
-            return response()->json($exception->toArray(), $exception->getStatusCode());
+        return $this->respond($exception->toArray(), $exception->getStatusCode());
+    }
+
+    private function renderSystemExceptions(Exception $exception)
+    {
+        if (get_class($exception) == 'Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException') {
+            return $this->renderCustomException(new MethodNotAllowedException);
+        } elseif (get_class($exception) == 'Symfony\Component\HttpKernel\Exception\NotFoundHttpException') {
+            return $this->renderCustomException(new RouteNotFoundException);
+        } elseif (get_class($exception) == 'Illuminate\Auth\Access\AuthorizationException') {
+            return $this->renderCustomException(new UnauthorizedException);
+        } else {
+            return $this->renderJson($exception);
         }
     }
 
-    private function renderJson($exception)
+    private function renderJson(Exception $exception)
     {
-        $data = [
-            'class'       => get_class($exception),
+        if (env('APP_DEBUG')) {
+            $data = $this->renderDebugJson($exception);
+        } else {
+            $data = $this->renderProductionJson($exception);
+        }
+
+        return $this->respond($data);
+    }
+
+    private function renderDebugJson(Exception $exception)
+    {
+        return [
             'status_code' => $exception->getCode(),
-            'file'        => $exception->getFile(),
+            'message'     => $exception->getMessage(),
+            'class'       => get_class($exception),
             'line'        => $exception->getLine(),
+            'trace'       => $exception->getTrace()
+        ];
+    }
+
+    private function renderProductionJson(Exception $exception)
+    {
+        return [
+            'status_code' => $exception->getCode(),
             'message'     => $exception->getMessage()
         ];
+    }
+
+    private function respond(array $data, $statusCode = null)
+    {
+        if (!$statusCode) {
+            $statusCode = 500;
+        }
 
         try {
-            $data['trace'] = $exception->getTrace();
-            return response()->json($data);
+            return response()->json($data)->setStatusCode($statusCode);
         } catch (InvalidArgumentException $e) {
             unset($data['trace']);
-            return response()->json($data);
+
+            return response()->json($data)->setStatusCode($statusCode);
         }
     }
 }

@@ -6,14 +6,13 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateUsersTable extends Migration
 {
-
     public function up()
     {
         Schema::create('users', function (Blueprint $table) {
             $table->increments('id');
             $table->string('full_name')->default('');
             $table->string('email')->default('');
-            $table->timestamp('birth_date');
+            $table->timestamp('birth_date')->nullable();
             $table->string('gender')->default('');
             $table->string('password')->default('');
             $table->timestamps();
@@ -24,6 +23,6 @@ class CreateUsersTable extends Migration
 
     public function down()
     {
-        Schema::dropTable('users');
+        Schema::drop('users');
     }
 }

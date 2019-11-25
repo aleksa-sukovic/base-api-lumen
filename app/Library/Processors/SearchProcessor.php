@@ -8,14 +8,14 @@ use Aleksa\Library\Processors\BaseProcessor;
 class SearchProcessor extends BaseProcessor
 {
 
-    public function process(Builder $query, $params): Builder
+    public function process(Builder $query, $params, $tableName = ''): Builder
     {
         foreach ($params as $key => $value) {
             if(!in_array($key, $this->processableParams)) {
                 continue;
             }
 
-            $query->where($key, 'like', '%' . $value . '%');
+            $query->where($tableName . '.' . $key, 'like', '%' . $value . '%');
         }
 
         return $query;

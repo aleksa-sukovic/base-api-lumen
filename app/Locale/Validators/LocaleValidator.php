@@ -7,8 +7,7 @@ use Aleksa\Library\Validators\BaseValidator;
 class LocaleValidator extends BaseValidator
 {
     protected $rules = [
-        'code'    => 'required|unique:locales,code',
-        'display' => 'required'
+        'code'    => 'required|unique:locales,code'
     ];
 
     protected $updateRules = [

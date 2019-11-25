@@ -9,6 +9,7 @@ class UserOrderProcessor extends OrderProcessor
     protected $processableParams = [
         'id',
         'email',
-        'full_name'
+        'full_name',
+        'gender'
     ];
 }
