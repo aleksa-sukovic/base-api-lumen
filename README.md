@@ -40,6 +40,6 @@ Numerous of features are included representing the core of this project. Adding 
 
 ## What have I learned
 
-* A lot of software modeling techniques. (more than I can list)
+* A lot of software modeling techniques (more than I can list).
 * Laravel/Lumen.
 * PHP.
