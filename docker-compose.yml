@@ -1,0 +1,33 @@
+version: '3'
+services:
+  php:
+    build:
+      context: .
+      args:
+        - USER_ID=1000
+        - USER_GROUP=1000
+      dockerfile: .docker/php/Dockerfile
+    image: aleksa/dictionary:7.4.1
+    networks:
+      - backend
+    depends_on:
+      - db
+    volumes:
+      - ./:/var/www/html
+    ports:
+      - "80:80"
+  db:
+    build:
+      context: .
+      dockerfile: .docker/mariadb/Dockerfile
+    image: aleksa/mariadb:10.3.9
+    restart: always
+    networks:
+      - backend
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: base_api
+networks:
+  backend:
